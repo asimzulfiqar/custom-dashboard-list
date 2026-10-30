@@ -2,6 +2,7 @@ import React from 'react';
 import { css } from '@emotion/css';
 import { GrafanaTheme2 } from '@grafana/data';
 import { useStyles2, Icon } from '@grafana/ui';
+import { config } from '@grafana/runtime';
 import { CustomDashboardListOptions } from '../types';
 
 interface HeaderSectionProps {
@@ -34,29 +35,49 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
   }
 
   const title = options.header.headerTitle;
+  const isAdmin = detectedRole === 'admin';
 
-  // Helper: check if a string is just a numeric ID (e.g. "38", "'38'", "4110602600116")
-  const isPureId = (val?: string) => {
+  // Helper: check if a string is invalid as a person's display name
+  const isInvalidName = (val?: string) => {
     if (!val) {
       return true;
     }
     const clean = val.replace(/['"]/g, '').trim();
-    return /^\d+$/.test(clean);
+    if (!clean) {
+      return true;
+    }
+    // Pure numeric ID (e.g. "38", "47", "4110602600116")
+    if (/^\d+$/.test(clean)) {
+      return true;
+    }
+    // Unreplaced template variable (e.g. "${__user.name}", "${id}")
+    if (clean.includes('${') || clean.includes('__user')) {
+      return true;
+    }
+    return false;
   };
 
+  const runtimeUserName = config?.bootData?.user?.name || config?.bootData?.user?.login;
   const rawOptionUser = (options.header.userName || '').trim();
-  const validOptionUser = !isPureId(rawOptionUser) ? rawOptionUser : undefined;
-  const validDetectedUser = !isPureId(detectedUserName) ? detectedUserName : undefined;
 
-  // Prioritize real person / operator name over numeric IDs:
-  // For operators: use detected user name or the real operator name (e.g. "Appelmann, Erhard")
+  const validDetectedUser = !isInvalidName(detectedUserName) ? detectedUserName : undefined;
+  const validOptionUser = !isInvalidName(rawOptionUser) ? rawOptionUser : undefined;
+  const validRuntimeUser = !isInvalidName(runtimeUserName) ? runtimeUserName : undefined;
+
+  // Final display name priority:
+  // 1. Valid detected name from Query (e.g. o.name / au.name)
+  // 2. If operator: real operator name from PostgreSQL rows (e.g. "Appelmann, Erhard")
+  // 3. Current logged-in Grafana user from runtime session (e.g. "Administrator", "admin")
+  // 4. Panel option user (if not a pure ID)
+  // 5. Fallback: "Administrator" for admin, or "Benutzer"
   const displayUser =
     validDetectedUser ||
     (!isAuthority && operatorName ? operatorName : undefined) ||
+    validRuntimeUser ||
     validOptionUser ||
     operatorName ||
     currentUsername ||
-    'Benutzer';
+    (isAdmin ? 'Administrator' : 'Benutzer');
 
   const authority = detectedAuthority || options.header.authorityName;
   const bzk = detectedBetreiberkennzahl || options.header.betreiberkennzahl;
@@ -64,7 +85,6 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
   // Determine whether to show authority name in parentheses:
   // - Show for Authorities: Willkommen Max Mustermann (Wasserwirtschaftsamt Aschaffenburg)
   // - Hide for Admins: Willkommen Max Mustermann
-  const isAdmin = detectedRole === 'admin';
   const showAuthorityTag = isAuthority && !isAdmin && authority && authority !== 'All Authorities';
 
   return (
