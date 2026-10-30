@@ -239,9 +239,24 @@ export function extractWellRows(
     const lastSeenIdx = findFieldIndex(fields, mappings.lastSeenField, [/time/i, /timestamp/i, /last_seen/i, /status_time/i]);
     const statusIdx = findFieldIndex(fields, mappings.statusField, [/status/i, /online/i]);
     const uidIdx = findFieldIndex(fields, mappings.dashboardUidField, [/uid/i, /dashboard/i]);
-    const bzkIdx = findFieldIndex(fields, mappings.betreiberkennzahlField, [/operator_id/i, /bzk/i, /account_id/i]);
-    const authIdx = findFieldIndex(fields, mappings.authorityNameField, [/authority/i, /regulator/i, /agency/i, /leitstelle/i]);
-    const roleIdx = findFieldIndex(fields, mappings.roleField, [/role/i, /user_type/i]);
+    const bzkIdx = findFieldIndex(fields, mappings.betreiberkennzahlField, [
+      /betreiberkennzahl/i,
+      /numerical_id/i,
+      /operator_id/i,
+      /betreiber_id/i,
+      /kennzahl/i,
+      /bzk/i,
+      /account_id/i,
+    ]);
+    const authIdx = findFieldIndex(fields, mappings.authorityNameField, [
+      /authority/i,
+      /regulator/i,
+      /agency/i,
+      /leitstelle/i,
+      /behoerde/i,
+      /amt/i,
+    ]);
+    const roleIdx = findFieldIndex(fields, mappings.roleField, [/role/i, /user_role/i, /user_type/i]);
     const userIdx = findFieldIndex(fields, mappings.userNameField, [/user_name/i, /username/i, /^user$/i, /benutzer/i]);
 
     const isDefinitionFrame = nameIdx !== -1 || operatorIdx !== -1;
@@ -291,9 +306,12 @@ export function extractWellRows(
       }
 
       if (bzkIdx !== -1 && fields[bzkIdx].values[r] != null) {
-        existing.betreiberkennzahl = String(fields[bzkIdx].values[r]);
-        if (!detectedBetreiberkennzahl) {
-          detectedBetreiberkennzahl = existing.betreiberkennzahl;
+        const bVal = String(fields[bzkIdx].values[r]).trim();
+        if (bVal && bVal !== 'null' && bVal !== 'undefined') {
+          existing.betreiberkennzahl = bVal;
+          if (!detectedBetreiberkennzahl) {
+            detectedBetreiberkennzahl = bVal;
+          }
         }
       } else if (varBzk && !existing.betreiberkennzahl) {
         existing.betreiberkennzahl = varBzk;

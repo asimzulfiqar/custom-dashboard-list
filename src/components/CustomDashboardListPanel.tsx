@@ -127,7 +127,7 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
         isAuthority={isAuthority}
         detectedRole={detectedRole}
         detectedAuthority={detectedAuthority}
-        detectedBetreiberkennzahl={detectedBetreiberkennzahl}
+        detectedBetreiberkennzahl={detectedBetreiberkennzahl || rows.find((r) => Boolean(r.betreiberkennzahl))?.betreiberkennzahl}
         detectedUserName={detectedUserName}
         operatorName={rows.length > 0 ? rows[0].operator : undefined}
         isNarrow={isNarrow}

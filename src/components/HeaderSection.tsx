@@ -79,8 +79,17 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
     currentUsername ||
     (isAdmin ? 'Administrator' : 'Benutzer');
 
-  const authority = detectedAuthority || options.header.authorityName;
-  const bzk = detectedBetreiberkennzahl || options.header.betreiberkennzahl;
+  const rawOptionAuth = (options.header.authorityName || '').trim();
+  const validOptionAuth =
+    rawOptionAuth && rawOptionAuth !== 'Zentrale Netzleitstelle' && !rawOptionAuth.includes('${')
+      ? rawOptionAuth
+      : undefined;
+  const authority = detectedAuthority || validOptionAuth;
+
+  const rawOptionBzk = (options.header.betreiberkennzahl || '').trim();
+  const validOptionBzk =
+    rawOptionBzk && rawOptionBzk !== 'OPS-DE-1044' && !rawOptionBzk.includes('${') ? rawOptionBzk : undefined;
+  const bzk = detectedBetreiberkennzahl || validOptionBzk;
 
   // Determine whether to show authority name in parentheses:
   // - Show for Authorities: Willkommen Max Mustermann (Wasserwirtschaftsamt Aschaffenburg)

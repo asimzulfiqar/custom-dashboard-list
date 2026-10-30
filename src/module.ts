@@ -161,13 +161,13 @@ export const plugin = new PanelPlugin<CustomDashboardListOptions>(CustomDashboar
       path: 'header.authorityName',
       name: 'Aufsichtsbehörde / Leitstelle (Fallback)',
       category: ['Kopfbereich & Begrüßung'],
-      defaultValue: 'Zentrale Netzleitstelle',
+      defaultValue: '',
     })
     .addTextInput({
       path: 'header.betreiberkennzahl',
-      name: 'Betreiber-ID (Fallback)',
+      name: 'Betreiberkennzahl (Fallback)',
       category: ['Kopfbereich & Begrüßung'],
-      defaultValue: 'OPS-DE-1044',
+      defaultValue: '',
     })
 
     // -------------------------------------------------------------
