@@ -28,7 +28,6 @@ export const QuickLinksSection: React.FC<QuickLinksSectionProps> = ({
   return (
     <div className={styles.container}>
       <h3 className={styles.sectionHeading}>
-        <Icon name="compass" size="md" />
         Weitere Messstellen & Messwerte
       </h3>
 
@@ -37,14 +36,8 @@ export const QuickLinksSection: React.FC<QuickLinksSectionProps> = ({
         {showGroundwater && (
           <div className={styles.card}>
             <div className={styles.cardHeader}>
-              <div className={styles.cardIconWater}>
-                <Icon name="compass" size="lg" />
-              </div>
               <div className={styles.cardTextWrapper}>
                 <h4 className={styles.cardTitle}>{ql.groundwaterTitle || 'Zentrale Netz- & Pegelüberwachung'}</h4>
-                <p className={styles.cardDescription}>
-                  Überwachung der regionalen Netzknotenpunkte und Hauptversorgungsstränge
-                </p>
               </div>
             </div>
 
@@ -64,14 +57,8 @@ export const QuickLinksSection: React.FC<QuickLinksSectionProps> = ({
         {showWeather && (
           <div className={styles.card}>
             <div className={styles.cardHeader}>
-              <div className={styles.cardIconWeather}>
-                <Icon name="cloud" size="lg" />
-              </div>
               <div className={styles.cardTextWrapper}>
                 <h4 className={styles.cardTitle}>{ql.weatherTitle || 'Meteorologische Referenzstation'}</h4>
-                <p className={styles.cardDescription}>
-                  Aktuelle meteorologische Parameter, Einstrahlung und Temperaturprofile
-                </p>
               </div>
             </div>
 

@@ -151,16 +151,14 @@ const getStyles = (theme: GrafanaTheme2) => ({
     justify-content: space-between;
     flex-wrap: wrap;
     gap: ${theme.spacing(1.5)};
-    padding-bottom: ${theme.spacing(1)};
-    border-bottom: 1px solid ${theme.colors.border.weak};
+    padding-bottom: ${theme.spacing(0.5)};
   `,
   titleRowNarrow: css`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: ${theme.spacing(1)};
-    padding-bottom: ${theme.spacing(1)};
-    border-bottom: 1px solid ${theme.colors.border.weak};
+    padding-bottom: ${theme.spacing(0.5)};
   `,
   titleGroup: css`
     display: flex;
