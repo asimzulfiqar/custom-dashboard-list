@@ -234,7 +234,22 @@ const getStyles = (theme: GrafanaTheme2) => ({
     border: 1px solid ${theme.colors.border.weak};
     border-radius: ${theme.shape.radius.default};
     background: ${theme.colors.background.secondary};
-    overflow: hidden;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: ${theme.colors.border.medium} transparent;
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: ${theme.colors.border.medium};
+      border-radius: 3px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: ${theme.colors.border.strong};
+    }
   `,
   groupHeader: css`
     display: flex;
@@ -246,6 +261,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
     cursor: pointer;
     user-select: none;
     transition: background 0.15s ease-in-out;
+    min-width: max-content;
     &:hover {
       background: ${theme.colors.action.hover};
     }

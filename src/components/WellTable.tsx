@@ -198,9 +198,13 @@ const getStyles = (theme: GrafanaTheme2) => ({
       background: ${theme.colors.border.medium};
       border-radius: 3px;
     }
+    &::-webkit-scrollbar-thumb:hover {
+      background: ${theme.colors.border.strong};
+    }
   `,
   table: css`
     width: 100%;
+    min-width: 680px;
     border-collapse: collapse;
     font-size: clamp(14px, 0.95vw, 17px);
     text-align: left;
