@@ -30,13 +30,22 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
   }
 
   const title = options.header.headerTitle;
-  const displayUser = detectedUserName || options.header.userName || currentUsername || 'Benutzer';
+  // If configured userName is just a numeric ID (e.g. "38"), ignore it in favor of detected name or fallback
+  const rawOptionUser = (options.header.userName || '').trim();
+  const isOptionUserAnId = /^\d+$/.test(rawOptionUser);
+  const displayUser =
+    detectedUserName ||
+    (!isOptionUserAnId && rawOptionUser ? rawOptionUser : undefined) ||
+    currentUsername ||
+    'Benutzer';
+
+  const authority = detectedAuthority || options.header.authorityName;
   const bzk = detectedBetreiberkennzahl || options.header.betreiberkennzahl;
 
   return (
     <div className={styles.container}>
-      {/* Header Title Banner - without logo and without subtitle */}
-      {title && (
+      {/* Header Title Banner - only shown if a custom title is explicitly given */}
+      {title && title !== 'Smart Utility & Grid Operations' && (
         <div className={isNarrow ? styles.titleRowNarrow : styles.titleRow}>
           <div className={styles.titleGroup}>
             <div className={styles.titleTextWrapper}>
@@ -51,17 +60,27 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
         </div>
       )}
 
-      {/* User Greeting Card */}
+      {/* User Greeting Card matching exact layout specifications */}
       <div className={styles.welcomeCard}>
         <div className={styles.welcomeText}>
-          <div className={styles.greetingLine}>
-            <span className={styles.welcomeLabel}>Willkommen </span>
-            <span className={styles.userName}>{displayUser}</span>
-          </div>
-          {!isAuthority && bzk && (
-            <div className={styles.bzkLine}>
-              <span className={styles.bzkLabel}>Betreiber-ID: </span>
-              <span className={styles.bzkValue}>{bzk}</span>
+          {isAuthority ? (
+            <div className={styles.greetingLine}>
+              <span className={styles.welcomeTitle}>Willkommen {displayUser}</span>
+              {authority && (
+                <span className={styles.authorityTag}> ({authority})</span>
+              )}
+            </div>
+          ) : (
+            <div>
+              <div className={styles.greetingLine}>
+                <span className={styles.welcomeTitle}>Willkommen {displayUser}</span>
+              </div>
+              {bzk && (
+                <div className={styles.bzkLine}>
+                  <span className={styles.bzkLabel}>Betreiberkennzahl:</span>{' '}
+                  <span className={styles.bzkValue}>{bzk}</span>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -74,7 +93,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
   container: css`
     display: flex;
     flex-direction: column;
-    gap: ${theme.spacing(1.5)};
+    gap: ${theme.spacing(1)};
     margin-bottom: ${theme.spacing(1.5)};
   `,
   titleRow: css`
@@ -101,20 +120,6 @@ const getStyles = (theme: GrafanaTheme2) => ({
     width: 100%;
     min-width: 0;
   `,
-  iconWrapper: css`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 8px;
-    background: ${theme.colors.primary.transparent};
-    color: ${theme.colors.primary.text};
-    flex-shrink: 0;
-  `,
-  headerIcon: css`
-    color: ${theme.colors.primary.text};
-  `,
   titleTextWrapper: css`
     min-width: 0;
     flex: 1;
@@ -135,11 +140,6 @@ const getStyles = (theme: GrafanaTheme2) => ({
     line-height: 1.25;
     word-break: break-word;
   `,
-  subtitle: css`
-    font-size: ${theme.typography.bodySmall.fontSize};
-    color: ${theme.colors.text.secondary};
-    margin-top: 2px;
-  `,
   roleBadge: css`
     display: inline-flex;
     align-items: center;
@@ -154,50 +154,42 @@ const getStyles = (theme: GrafanaTheme2) => ({
     white-space: nowrap;
   `,
   welcomeCard: css`
-    background: ${theme.colors.background.secondary};
-    border-left: 4px solid ${theme.colors.primary.border};
-    border-radius: 0 ${theme.shape.radius.default} ${theme.shape.radius.default} 0;
-    padding: ${theme.spacing(1.25)} ${theme.spacing(1.5)};
-    box-shadow: ${theme.shadows.z1};
+    padding: ${theme.spacing(0.5)} 0;
+    margin-bottom: ${theme.spacing(0.5)};
+    display: inline-flex;
+    flex-direction: column;
+    border-right: 2px solid ${theme.colors.border.medium};
+    padding-right: ${theme.spacing(3)};
   `,
   welcomeText: css`
-    font-size: 15px;
     color: ${theme.colors.text.primary};
   `,
   greetingLine: css`
-    line-height: 1.4;
+    line-height: 1.35;
     word-break: break-word;
   `,
-  welcomeLabel: css`
-    color: ${theme.colors.text.secondary};
-  `,
-  userName: css`
+  welcomeTitle: css`
+    font-size: 20px;
     font-weight: ${theme.typography.fontWeightBold};
     color: ${theme.colors.text.primary};
   `,
   authorityTag: css`
-    color: ${theme.colors.text.secondary};
+    font-size: 20px;
     font-weight: ${theme.typography.fontWeightMedium};
+    color: ${theme.colors.text.primary};
   `,
   bzkLine: css`
     margin-top: 4px;
-    font-size: ${theme.typography.body.fontSize};
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
+    font-size: 15px;
+    line-height: 1.35;
+    color: ${theme.colors.text.primary};
   `,
   bzkLabel: css`
-    color: ${theme.colors.text.secondary};
-    font-weight: ${theme.typography.fontWeightRegular};
-  `,
-  bzkValue: css`
-    font-family: ${theme.typography.fontFamilyMonospace};
     font-weight: ${theme.typography.fontWeightBold};
     color: ${theme.colors.text.primary};
-    background: ${theme.colors.background.canvas};
-    padding: 2px 6px;
-    border-radius: 4px;
-    border: 1px solid ${theme.colors.border.weak};
+  `,
+  bzkValue: css`
+    font-weight: ${theme.typography.fontWeightRegular};
+    color: ${theme.colors.text.primary};
   `,
 });

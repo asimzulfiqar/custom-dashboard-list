@@ -77,21 +77,21 @@ export const WellTable: React.FC<WellTableProps> = ({
               {/* Responsive Metrics Grid */}
               <div className={styles.mobileMetricsGrid}>
                 <div className={styles.mobileMetricBox}>
-                  <span className={styles.metricLabel}>Zählerstand</span>
+                  <span className={styles.metricLabel}>Letzter Zählerstand</span>
                   <span className={styles.metricVal}>
                     {formatMetricValue(well.meterReading, format, readingDecimals, options.meterReadingUnit || 'm³')}
                   </span>
                 </div>
 
                 <div className={styles.mobileMetricBox}>
-                  <span className={styles.metricLabel}>Verbrauch 12h</span>
+                  <span className={styles.metricLabel}>Wasserentnahme 12h</span>
                   <span className={styles.metricVal}>
                     {formatMetricValue(well.consumption12h, format, consumptionDecimals, options.consumption12hUnit || 'm³')}
                   </span>
                 </div>
 
                 <div className={styles.mobileMetricBox}>
-                  <span className={styles.metricLabel}>Verbrauch Jahr</span>
+                  <span className={styles.metricLabel}>Entnahme lfd. Jahr</span>
                   <span className={styles.metricVal}>
                     {formatMetricValue(well.consumptionYear, format, consumptionDecimals, options.consumptionYearUnit || 'm³')}
                   </span>
@@ -119,12 +119,12 @@ export const WellTable: React.FC<WellTableProps> = ({
       <table className={styles.table}>
         <thead>
           <tr>
-            <th className={styles.thWell}>Messstelle / Station</th>
+            <th className={styles.thWell}>Brunnen</th>
             {showOperatorColumn && <th className={styles.thOperator}>Betreiber</th>}
-            <th className={styles.thNumber}>Aktueller Zählerstand</th>
-            <th className={styles.thNumber}>Verbrauch letzte 12 Std.</th>
-            <th className={styles.thNumber}>Gesamtverbrauch laufendes Jahr</th>
-            <th className={styles.thStatus}>Übertragungsstatus</th>
+            <th className={styles.thNumber}>Letzter Zählerstand</th>
+            <th className={styles.thNumber}>Wasserentnahmen letzte 12 Std.</th>
+            <th className={styles.thNumber}>Entnahme im laufenden Kalenderjahr</th>
+            <th className={styles.thStatus}>Funkstatus</th>
           </tr>
         </thead>
         <tbody>
