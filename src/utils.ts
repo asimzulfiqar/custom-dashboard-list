@@ -222,20 +222,39 @@ export function extractWellRows(
     const authIdx = findFieldIndex(fields, mappings.authorityNameField, [/authority/i, /regulator/i, /agency/i, /leitstelle/i]);
     const roleIdx = findFieldIndex(fields, mappings.roleField, [/role/i, /user_type/i]);
 
+    const isDefinitionFrame = nameIdx !== -1 || operatorIdx !== -1;
+
     for (let r = 0; r < rowCount; r++) {
       const rawId = idIdx !== -1 ? String(fields[idIdx].values[r] ?? '') : (varWellId || '');
-      const rawName = nameIdx !== -1 ? String(fields[nameIdx].values[r] ?? '') : (varWellName || '');
+      const rawName = nameIdx !== -1 && fields[nameIdx].values[r] != null ? String(fields[nameIdx].values[r]).trim() : '';
       const key = rawId || rawName || `row-${r}`;
 
       if (!key) {
         continue;
       }
 
-      const existing = rowsMap.get(key) || {
-        id: rawId || key,
-        name: rawName || rawId || 'Messstelle',
-        operator: varOperator || 'Hauptbetreiber',
-      };
+      // If this frame contains a well name column (e.g. joined table or metadata query)
+      // and this row has no name/title, it means it's an unmatched outer-join row from telemetry.
+      // We must skip it to preserve user access permissions.
+      if (nameIdx !== -1 && !rawName) {
+        continue;
+      }
+
+      let existing = rowsMap.get(key);
+
+      // If this is a telemetry-only frame (no name, no operator) and we already have defined wells,
+      // do not create phantom wells for unauthorized IDs.
+      if (!existing && !isDefinitionFrame && rowsMap.size > 0) {
+        continue;
+      }
+
+      if (!existing) {
+        existing = {
+          id: rawId || key,
+          name: rawName || rawId || 'Messstelle',
+          operator: varOperator || 'Allgemein',
+        };
+      }
 
       if (rawId) {
         existing.id = rawId;
@@ -243,9 +262,9 @@ export function extractWellRows(
       if (rawName) {
         existing.name = rawName;
       }
-      if (operatorIdx !== -1 && fields[operatorIdx].values[r] != null) {
-        existing.operator = String(fields[operatorIdx].values[r]);
-      } else if (varOperator && (!existing.operator || existing.operator === 'Hauptbetreiber')) {
+      if (operatorIdx !== -1 && fields[operatorIdx].values[r] != null && String(fields[operatorIdx].values[r]).trim() !== '') {
+        existing.operator = String(fields[operatorIdx].values[r]).trim();
+      } else if (varOperator && (!existing.operator || existing.operator === 'Allgemein')) {
         existing.operator = varOperator;
       }
 
@@ -343,7 +362,7 @@ export function groupWellsByOperator(rows: WellRow[]): BetreiberGroup[] {
   const groupsMap = new Map<string, BetreiberGroup>();
 
   for (const row of rows) {
-    const op = row.operator || 'Hauptbetreiber';
+    const op = row.operator || 'Allgemein';
     let group = groupsMap.get(op);
     if (!group) {
       group = {
