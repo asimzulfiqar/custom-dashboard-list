@@ -162,10 +162,10 @@ export const BetreiberAccordion: React.FC<BetreiberAccordionProps> = ({
                       Jahr: <strong>{formatMetricValue(group.totalConsumptionYear, format, consumptionDecimals, options.consumptionYearUnit || 'm³')}</strong>
                     </span>
                     <div className={styles.statusSummary}>
-                      <span className={styles.onlineBadge}>🟢 {group.onlineCount}</span>
-                      {group.offlineCount > 0 && (
-                        <span className={styles.offlineBadge}>🔴 {group.offlineCount}</span>
-                      )}
+                      <span className={styles.onlineBadge} title="Online Stationen">🟢 {group.onlineCount}</span>
+                      <span className={group.offlineCount > 0 ? styles.offlineBadge : styles.offlineZeroBadge} title="Offline Stationen">
+                        🔴 {group.offlineCount}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -240,6 +240,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: ${theme.spacing(2)};
     padding: ${theme.spacing(1.2)} ${theme.spacing(1.5)};
     background: ${theme.colors.background.secondary};
     cursor: pointer;
@@ -267,8 +268,9 @@ const getStyles = (theme: GrafanaTheme2) => ({
     display: flex;
     align-items: center;
     gap: ${theme.spacing(1)};
-    flex-wrap: wrap;
-    width: 100%;
+    flex-wrap: nowrap;
+    min-width: 0;
+    flex: 1;
   `,
   chevronIcon: css`
     color: ${theme.colors.text.secondary};
@@ -302,7 +304,9 @@ const getStyles = (theme: GrafanaTheme2) => ({
     display: flex;
     align-items: center;
     gap: ${theme.spacing(2)};
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    white-space: nowrap;
   `,
   groupHeaderRightNarrow: css`
     display: flex;
@@ -311,8 +315,10 @@ const getStyles = (theme: GrafanaTheme2) => ({
     width: 100%;
     padding-top: 6px;
     border-top: 1px solid ${theme.colors.border.weak};
-    gap: ${theme.spacing(1)};
-    flex-wrap: wrap;
+    gap: ${theme.spacing(1.5)};
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow-x: auto;
   `,
   summaryMetric: css`
     font-size: clamp(13px, 0.9vw, 16px);
@@ -325,17 +331,36 @@ const getStyles = (theme: GrafanaTheme2) => ({
     }
   `,
   statusSummary: css`
-    display: flex;
-    gap: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     font-size: ${theme.typography.bodySmall.fontSize};
+    white-space: nowrap;
   `,
   onlineBadge: css`
     color: ${theme.colors.success.text};
     font-weight: ${theme.typography.fontWeightMedium};
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
   `,
   offlineBadge: css`
     color: ${theme.colors.error.text};
     font-weight: ${theme.typography.fontWeightMedium};
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  `,
+  offlineZeroBadge: css`
+    color: ${theme.colors.text.secondary};
+    opacity: 0.6;
+    font-weight: ${theme.typography.fontWeightRegular};
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
   `,
   groupContent: css`
     padding: ${theme.spacing(1.25)};
