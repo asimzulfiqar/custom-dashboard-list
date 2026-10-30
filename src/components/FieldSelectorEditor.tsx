@@ -33,7 +33,7 @@ export const FieldSelectorEditor = ({
   ];
 
   const fieldOptions = Array.from(new Set(fields.filter(Boolean))).map((f) => ({
-    label: `Spalte: ${f}`,
+    label: `Column: ${f}`,
     value: f as string,
   }));
 
@@ -43,7 +43,7 @@ export const FieldSelectorEditor = ({
   }));
 
   const currentOption = value && !fields.includes(value) && !dashboardVars.includes(value) && !builtInVars.includes(value)
-    ? [{ label: `Wert / Variable: ${value}`, value }]
+    ? [{ label: `Value / Variable: ${value}`, value }]
     : [];
 
   const options = [...fieldOptions, ...varOptions, ...currentOption];
@@ -52,7 +52,7 @@ export const FieldSelectorEditor = ({
     <Combobox
       isClearable
       createCustomValue
-      customValueDescription="Als Variable oder benutzerdefinierten Wert verwenden"
+      customValueDescription="Use as variable or custom value"
       options={options}
       value={value}
       onChange={(selected) => onChange(selected?.value ?? '')}
