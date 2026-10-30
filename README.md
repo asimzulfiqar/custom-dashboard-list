@@ -130,6 +130,21 @@ To provision this panel automatically via Terraform or dashboard JSON templates,
 
 ---
 
+## Tools & Utilities
+
+### InfluxDB 1.x Schema Dumper
+A standalone Python script is provided under `scripts/dump_influxdb_schema.py` to inspect and export your InfluxDB schema (measurements, tags, fields, and latest sample points) to JSON and Markdown reports:
+
+```bash
+# Dump local InfluxDB schema
+python scripts/dump_influxdb_schema.py
+
+# With authentication and specific database
+python scripts/dump_influxdb_schema.py --host <influx-host> --port 8086 -d <database> -u <user> -p <password>
+```
+
+---
+
 ## Local Development & Testing
 
 ```bash
