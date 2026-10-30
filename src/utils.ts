@@ -209,8 +209,8 @@ export function extractWellRows(
     }
 
     const rowCount = frame.length;
-    const nameIdx = findFieldIndex(fields, mappings.wellNameField, [/title/i, /station/i, /anlage/i, /device/i, /messstelle/i, /name/i]);
-    const idIdx = findFieldIndex(fields, mappings.wellIdField, [/id_raw/i, /device_id/i, /station_id/i, /meter_id/i, /^id$/i]);
+    const nameIdx = findFieldIndex(fields, mappings.wellNameField, [/title/i, /brunnenbezeichnung/i, /brunnen/i, /station/i, /anlage/i, /messstelle/i, /^name$/i]);
+    const idIdx = findFieldIndex(fields, mappings.wellIdField, [/well_id/i, /objektkennzahl/i, /id_raw/i, /device_id/i, /station_id/i, /meter_id/i, /^id$/i]);
     const operatorIdx = findFieldIndex(fields, mappings.operatorField, [/operator/i, /betreiber/i, /company/i, /vendor/i]);
     const readingIdx = findFieldIndex(fields, mappings.meterReadingField, [/reading/i, /meter/i, /zaehlerstand/i, /value/i, /total/i]);
     const c12hIdx = findFieldIndex(fields, mappings.consumption12hField, [/12h/i, /12_h/i, /consumption_12h/i, /letzte_12/i]);
