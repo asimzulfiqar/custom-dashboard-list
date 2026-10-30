@@ -9,6 +9,7 @@ interface HeaderSectionProps {
   isAuthority: boolean;
   detectedAuthority?: string;
   detectedBetreiberkennzahl?: string;
+  detectedUserName?: string;
   currentUsername?: string;
   isNarrow?: boolean;
 }
@@ -18,6 +19,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
   isAuthority,
   detectedAuthority,
   detectedBetreiberkennzahl,
+  detectedUserName,
   currentUsername,
   isNarrow = false,
 }) => {
@@ -27,54 +29,39 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
     return null;
   }
 
-  const title = options.header.headerTitle || 'Smart Utility & Grid Operations';
-  const displayUser = options.header.userName || currentUsername || 'Benutzer';
-  const authority = detectedAuthority || options.header.authorityName || 'Zentrale Netzleitstelle';
-  const bzk = detectedBetreiberkennzahl || options.header.betreiberkennzahl || 'OPS-DE-1044';
+  const title = options.header.headerTitle;
+  const displayUser = detectedUserName || options.header.userName || currentUsername || 'Benutzer';
+  const bzk = detectedBetreiberkennzahl || options.header.betreiberkennzahl;
 
   return (
     <div className={styles.container}>
-      {/* Header Title Banner */}
-      <div className={isNarrow ? styles.titleRowNarrow : styles.titleRow}>
-        <div className={styles.titleGroup}>
-          <div className={styles.iconWrapper}>
-            <Icon name="dashboard" size="xl" className={styles.headerIcon} />
-          </div>
-          <div className={styles.titleTextWrapper}>
-            <h1 className={isNarrow ? styles.mainTitleNarrow : styles.mainTitle}>{title}</h1>
-            <div className={styles.subtitle}>
-              {isAuthority ? 'Zentrales Aufsichts- & Monitoringportal' : 'Betreiberportal & Anlagenübersicht'}
+      {/* Header Title Banner - without logo and without subtitle */}
+      {title && (
+        <div className={isNarrow ? styles.titleRowNarrow : styles.titleRow}>
+          <div className={styles.titleGroup}>
+            <div className={styles.titleTextWrapper}>
+              <h1 className={isNarrow ? styles.mainTitleNarrow : styles.mainTitle}>{title}</h1>
             </div>
           </div>
-        </div>
 
-        <div className={styles.roleBadge}>
-          <Icon name={isAuthority ? 'shield' : 'user'} size="sm" />
-          <span>{isAuthority ? 'Aufsichtsansicht' : 'Betreiberansicht'}</span>
+          <div className={styles.roleBadge}>
+            <Icon name={isAuthority ? 'shield' : 'user'} size="sm" />
+            <span>{isAuthority ? 'Aufsichtsansicht' : 'Betreiberansicht'}</span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* User Greeting Card */}
       <div className={styles.welcomeCard}>
         <div className={styles.welcomeText}>
-          {isAuthority ? (
-            <div className={styles.greetingLine}>
-              <span className={styles.welcomeLabel}>Willkommen </span>
-              <span className={styles.userName}>{displayUser}</span>
-              {authority && <span className={styles.authorityTag}> ({authority})</span>}
-            </div>
-          ) : (
-            <div>
-              <div className={styles.greetingLine}>
-                <span className={styles.welcomeLabel}>Willkommen </span>
-                <span className={styles.userName}>{displayUser}</span>
-              </div>
-              {bzk && (
-                <div className={styles.bzkLine}>
-                  <span className={styles.bzkLabel}>Betreiber-ID: </span>
-                  <span className={styles.bzkValue}>{bzk}</span>
-                </div>
-              )}
+          <div className={styles.greetingLine}>
+            <span className={styles.welcomeLabel}>Willkommen </span>
+            <span className={styles.userName}>{displayUser}</span>
+          </div>
+          {!isAuthority && bzk && (
+            <div className={styles.bzkLine}>
+              <span className={styles.bzkLabel}>Betreiber-ID: </span>
+              <span className={styles.bzkValue}>{bzk}</span>
             </div>
           )}
         </div>

@@ -58,13 +58,14 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
   }, [options, replaceVariables]);
 
   // Extract and merge rows from all query data frames, resolving any mapped dashboard variables
-  const { extractedRows, detectedRole, detectedAuthority, detectedBetreiberkennzahl } = useMemo(() => {
+  const { extractedRows, detectedRole, detectedAuthority, detectedBetreiberkennzahl, detectedUserName } = useMemo(() => {
     const res = extractWellRows(data.series || [], interpolatedOptions, replaceVariables);
     return {
       extractedRows: res.rows,
       detectedRole: res.detectedRole,
       detectedAuthority: res.detectedAuthority,
       detectedBetreiberkennzahl: res.detectedBetreiberkennzahl,
+      detectedUserName: res.detectedUserName,
     };
   }, [data.series, interpolatedOptions, replaceVariables]);
 
@@ -120,6 +121,7 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
         isAuthority={isAuthority}
         detectedAuthority={detectedAuthority}
         detectedBetreiberkennzahl={detectedBetreiberkennzahl}
+        detectedUserName={detectedUserName}
         isNarrow={isNarrow}
       />
 

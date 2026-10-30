@@ -14,6 +14,7 @@ export interface FieldMappings {
   betreiberkennzahlField?: string;
   authorityNameField?: string;
   roleField?: string;
+  userNameField?: string;
 }
 
 export interface HeaderOptions {

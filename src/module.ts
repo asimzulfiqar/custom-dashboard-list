@@ -125,6 +125,15 @@ export const plugin = new PanelPlugin<CustomDashboardListOptions>(CustomDashboar
       editor: FieldSelectorEditor,
       defaultValue: '',
     })
+    .addCustomEditor({
+      id: 'fieldMappings.userNameField',
+      path: 'fieldMappings.userNameField',
+      name: 'Benutzername Spalte (Optional)',
+      category: ['Spaltenzuordnung (Queries)'],
+      description: 'Optional: Spalte mit Name des Benutzers aus der Query (z. B. user_name)',
+      editor: FieldSelectorEditor,
+      defaultValue: '',
+    })
 
     // -------------------------------------------------------------
     // Category: Kopfbereich & Begrüßung

@@ -178,7 +178,13 @@ export function extractWellRows(
   series: DataFrame[],
   options: CustomDashboardListOptions,
   replaceVariables?: (str: string) => string
-): { rows: WellRow[]; detectedRole?: 'authority' | 'operator'; detectedAuthority?: string; detectedBetreiberkennzahl?: string } {
+): {
+  rows: WellRow[];
+  detectedRole?: 'authority' | 'operator';
+  detectedAuthority?: string;
+  detectedBetreiberkennzahl?: string;
+  detectedUserName?: string;
+} {
   if (!series || series.length === 0) {
     return { rows: [] };
   }
@@ -204,12 +210,14 @@ export function extractWellRows(
   const varBzk = resolveVar(mappings.betreiberkennzahlField);
   const varAuth = resolveVar(mappings.authorityNameField);
   const varRole = resolveVar(mappings.roleField);
+  const varUser = resolveVar(mappings.userNameField);
 
   let detectedRole: 'authority' | 'operator' | undefined = varRole
     ? (varRole.toLowerCase().includes('author') || varRole.toLowerCase().includes('admin') || varRole.toLowerCase().includes('regulat') ? 'authority' : 'operator')
     : undefined;
   let detectedAuthority: string | undefined = varAuth || undefined;
   let detectedBetreiberkennzahl: string | undefined = varBzk || undefined;
+  let detectedUserName: string | undefined = varUser || undefined;
 
   for (const frame of series) {
     const fields = frame.fields;
@@ -230,6 +238,7 @@ export function extractWellRows(
     const bzkIdx = findFieldIndex(fields, mappings.betreiberkennzahlField, [/operator_id/i, /bzk/i, /account_id/i]);
     const authIdx = findFieldIndex(fields, mappings.authorityNameField, [/authority/i, /regulator/i, /agency/i, /leitstelle/i]);
     const roleIdx = findFieldIndex(fields, mappings.roleField, [/role/i, /user_type/i]);
+    const userIdx = findFieldIndex(fields, mappings.userNameField, [/user_name/i, /username/i, /^user$/i, /benutzer/i]);
 
     const isDefinitionFrame = nameIdx !== -1 || operatorIdx !== -1;
 
@@ -324,6 +333,12 @@ export function extractWellRows(
       if (authIdx !== -1 && fields[authIdx].values[r] != null && !detectedAuthority) {
         detectedAuthority = String(fields[authIdx].values[r]);
       }
+      if (userIdx !== -1 && fields[userIdx].values[r] != null && !detectedUserName) {
+        const uVal = String(fields[userIdx].values[r]).trim();
+        if (uVal) {
+          detectedUserName = uVal;
+        }
+      }
       if (roleIdx !== -1 && fields[roleIdx].values[r] != null && !detectedRole) {
         const rVal = String(fields[roleIdx].values[r]).toLowerCase();
         if (rVal.includes('author') || rVal.includes('admin') || rVal.includes('regulat') || rVal.includes('supervis')) {
@@ -374,7 +389,7 @@ export function extractWellRows(
     };
   });
 
-  return { rows, detectedRole, detectedAuthority, detectedBetreiberkennzahl };
+  return { rows, detectedRole, detectedAuthority, detectedBetreiberkennzahl, detectedUserName };
 }
 
 /**
