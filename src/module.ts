@@ -248,7 +248,8 @@ export const plugin = new PanelPlugin<CustomDashboardListOptions>(CustomDashboar
       path: 'defaultExpandedAccordions',
       name: 'Betreiber-Akkordeons standardmäßig aufklappen',
       category: ['Formatierung & Status'],
-      defaultValue: true,
+      description: 'Standardmäßig alle Betreiber aufklappen (wenn deaktiviert, sind alle zugeklappt)',
+      defaultValue: false,
     })
     .addBooleanSwitch({
       path: 'showSampleDataOnEmpty',

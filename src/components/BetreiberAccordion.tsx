@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { css } from '@emotion/css';
 import { GrafanaTheme2 } from '@grafana/data';
-import { useStyles2, Icon, Input, Button } from '@grafana/ui';
+import { useStyles2, Icon, Input, Button, Tooltip } from '@grafana/ui';
 import { BetreiberGroup, CustomDashboardListOptions } from '../types';
 import { WellTable } from './WellTable';
 import { formatMetricValue } from '../utils';
@@ -20,10 +20,12 @@ export const BetreiberAccordion: React.FC<BetreiberAccordionProps> = ({
   const styles = useStyles2(getStyles);
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Default each operator accordion to collapsed (zuklappen)
+  const defaultExpanded = options.defaultExpandedAccordions ?? false;
+
   // Track expanded state for each operator
   const [expandedMap, setExpandedMap] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
-    const defaultExpanded = options.defaultExpandedAccordions ?? true;
     for (const g of groups) {
       initial[g.operatorName] = defaultExpanded;
     }
@@ -37,18 +39,20 @@ export const BetreiberAccordion: React.FC<BetreiberAccordionProps> = ({
     }));
   };
 
-  const expandAll = () => {
-    const updated: Record<string, boolean> = {};
-    for (const g of groups) {
-      updated[g.operatorName] = true;
+  // Determine if all groups are currently expanded
+  const allExpanded = useMemo(() => {
+    if (groups.length === 0) {
+      return false;
     }
-    setExpandedMap(updated);
-  };
+    return groups.every((g) => expandedMap[g.operatorName] === true);
+  }, [groups, expandedMap]);
 
-  const collapseAll = () => {
+  // Single toggle action: if all expanded -> collapse all, otherwise -> expand all
+  const toggleAll = () => {
+    const nextState = !allExpanded;
     const updated: Record<string, boolean> = {};
     for (const g of groups) {
-      updated[g.operatorName] = false;
+      updated[g.operatorName] = nextState;
     }
     setExpandedMap(updated);
   };
@@ -102,12 +106,16 @@ export const BetreiberAccordion: React.FC<BetreiberAccordionProps> = ({
         )}
 
         <div className={isNarrow ? styles.buttonGroupNarrow : styles.buttonGroup}>
-          <Button size="sm" variant="secondary" onClick={expandAll} icon="angle-down" className={isNarrow ? styles.fullFlexButton : undefined}>
-            Aufklappen
-          </Button>
-          <Button size="sm" variant="secondary" onClick={collapseAll} icon="angle-right" className={isNarrow ? styles.fullFlexButton : undefined}>
-            Zuklappen
-          </Button>
+          <Tooltip content={allExpanded ? 'Alle zuklappen' : 'Alle aufklappen'} placement="top">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={toggleAll}
+              icon={allExpanded ? 'angle-double-up' : 'angle-double-down'}
+              aria-label={allExpanded ? 'Alle zuklappen' : 'Alle aufklappen'}
+              title={allExpanded ? 'Alle zuklappen' : 'Alle aufklappen'}
+            />
+          </Tooltip>
         </div>
       </div>
 
@@ -118,7 +126,7 @@ export const BetreiberAccordion: React.FC<BetreiberAccordionProps> = ({
       ) : (
         <div className={styles.groupList}>
           {filteredGroups.map((group) => {
-            const isExpanded = expandedMap[group.operatorName] ?? true;
+            const isExpanded = expandedMap[group.operatorName] ?? defaultExpanded;
             const consumptionDecimals = options.consumptionDecimals ?? 0;
             const format = options.numberFormat || 'de-grouped';
 
