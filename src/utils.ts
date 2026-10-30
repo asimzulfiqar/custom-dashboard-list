@@ -337,7 +337,20 @@ export function extractWellRows(
     }
   }
 
-  const rows: WellRow[] = Array.from(rowsMap.values()).map((p) => {
+  const excludedList = (options.excludedOperators ?? 'Hauptbetreiber')
+    .split(',')
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+
+  const shouldExclude = (op: string) => {
+    if (!op) return false;
+    const lower = op.toLowerCase();
+    return excludedList.some((ex) => lower.includes(ex));
+  };
+
+  const rows: WellRow[] = Array.from(rowsMap.values())
+    .filter((p) => !shouldExclude(p.operator || ''))
+    .map((p) => {
     const id = p.id || 'unbekannt';
     const name = p.name || id;
     const operator = p.operator || varOperator || 'Allgemein';
@@ -367,11 +380,25 @@ export function extractWellRows(
 /**
  * Group flat rows by operator.
  */
-export function groupWellsByOperator(rows: WellRow[]): BetreiberGroup[] {
+export function groupWellsByOperator(rows: WellRow[], excludedOperators?: string): BetreiberGroup[] {
   const groupsMap = new Map<string, BetreiberGroup>();
+
+  const excludedList = (excludedOperators ?? 'Hauptbetreiber')
+    .split(',')
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+
+  const shouldExclude = (op: string) => {
+    if (!op) return false;
+    const lower = op.toLowerCase();
+    return excludedList.some((ex) => lower.includes(ex));
+  };
 
   for (const row of rows) {
     const op = row.operator || 'Allgemein';
+    if (shouldExclude(op)) {
+      continue;
+    }
     let group = groupsMap.get(op);
     if (!group) {
       group = {

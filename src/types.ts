@@ -63,6 +63,7 @@ export interface CustomDashboardListOptions {
   consumption12hUnit: string;
   consumptionYearUnit: string;
   freshnessHoursThreshold: number; // default 24h
+  excludedOperators: string; // Comma-separated list or substring of operators to hide
   searchEnabled: boolean;
   defaultExpandedAccordions: boolean;
   showSampleDataOnEmpty: boolean;

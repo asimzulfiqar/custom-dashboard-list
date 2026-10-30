@@ -74,8 +74,8 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
 
   // Group devices by operator
   const groups = useMemo(() => {
-    return groupWellsByOperator(rows);
-  }, [rows]);
+    return groupWellsByOperator(rows, options.excludedOperators);
+  }, [rows, options.excludedOperators]);
 
   // Determine whether to display Authority or Operator layout
   const isAuthority = useMemo(() => {

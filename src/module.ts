@@ -215,6 +215,13 @@ export const plugin = new PanelPlugin<CustomDashboardListOptions>(CustomDashboar
       description: 'Innerhalb dieser Stundenzahl = Grüner Punkt, älter = Roter Punkt',
       defaultValue: 24,
     })
+    .addTextInput({
+      path: 'excludedOperators',
+      name: 'Betreiber ausblenden / ignorieren',
+      category: ['Formatierung & Status'],
+      description: 'Kommagetrennte Liste von Betreibernamen, die im Panel ausgeblendet werden (z. B. "Hauptbetreiber")',
+      defaultValue: 'Hauptbetreiber',
+    })
     .addBooleanSwitch({
       path: 'searchEnabled',
       name: 'Suchleiste aktivieren (Aufsichtsansicht)',
