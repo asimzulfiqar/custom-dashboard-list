@@ -1,0 +1,142 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "datasource": { "type": "testdata", "uid": "trlxrdZVk" },
+      "gridPos": { "h": 22, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "title": "Aufsichtsansicht (Netzleitstelle)",
+      "type": "asimzulfiqar-customdashboardlist-panel",
+      "options": {
+        "viewMode": "authority",
+        "fieldMappings": {
+          "wellNameField": "title",
+          "wellIdField": "id_raw",
+          "operatorField": "Betreiber",
+          "meterReadingField": "zaehlerstand",
+          "consumption12hField": "verbrauch_12h",
+          "consumptionYearField": "verbrauch_jahr",
+          "lastSeenField": "time"
+        },
+        "header": {
+          "showHeader": true,
+          "headerTitle": "Smart Utility & Grid Operations",
+          "userName": "Max Mustermann",
+          "authorityName": "Zentrale Netzleitstelle",
+          "betreiberkennzahl": "OPS-DE-1044"
+        },
+        "numberFormat": "de-grouped",
+        "readingDecimals": 0,
+        "consumptionDecimals": 0,
+        "meterReadingUnit": "m³",
+        "consumption12hUnit": "m³",
+        "consumptionYearUnit": "m³",
+        "freshnessHoursThreshold": 24,
+        "searchEnabled": true,
+        "defaultExpandedAccordions": true,
+        "showSampleDataOnEmpty": true,
+        "wellLinks": {
+          "wellUrlPattern": "/d/telemetry-detail?var-device_id=${wellId}&from=${from}&to=${to}",
+          "targetDashboardUid": "telemetry-detail",
+          "defaultTimeFrom": "now-7d",
+          "defaultTimeTo": "now",
+          "openInNewTab": false
+        },
+        "quickLinks": {
+          "showGroundwaterLink": true,
+          "groundwaterTitle": "Zentrale Netz- & Pegelüberwachung",
+          "groundwaterLinkLabel": "Zu den Netzmesswerten",
+          "groundwaterUrl": "/d/grid-telemetry",
+          "showWeatherLink": true,
+          "weatherTitle": "Meteorologische Referenzstation",
+          "weatherInternalLinkLabel": "Zu den meteorologischen Stationsdaten",
+          "weatherInternalUrl": "/d/weather-telemetry",
+          "weatherExternalLinkLabel": "Nationaler Wetterdienst (DWD)",
+          "weatherExternalUrl": "https://www.dwd.de"
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "testdata", "uid": "trlxrdZVk" },
+          "refId": "A",
+          "scenarioId": "raw_frame",
+          "rawFrameContent": "[{\"schema\":{\"fields\":[{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"id_raw\",\"type\":\"string\"},{\"name\":\"Betreiber\",\"type\":\"string\"},{\"name\":\"zaehlerstand\",\"type\":\"number\"},{\"name\":\"verbrauch_12h\",\"type\":\"number\"},{\"name\":\"verbrauch_jahr\",\"type\":\"number\"},{\"name\":\"time\",\"type\":\"time\"}]},\"data\":{\"values\":[[\"Einspeisestation Node-Alpha (FL-101)\",\"Druckminderstation Beta (FL-102)\",\"Verteilerknoten Nord 03 (FL-103)\",\"Pumpwerk Zentral 04 (FL-104)\",\"Hauptübergabestation Süd (DS-201)\",\"Kühlkreislaufmesspunkt 02 (DS-202)\",\"Speicherbecken Zulauf 01 (SP-301)\"],[\"FL-101\",\"FL-102\",\"FL-103\",\"FL-104\",\"DS-201\",\"DS-202\",\"SP-301\"],[\"Stadtwerke Sektor Nord (GmbH)\",\"Stadtwerke Sektor Nord (GmbH)\",\"Stadtwerke Sektor Nord (GmbH)\",\"Stadtwerke Sektor Nord (GmbH)\",\"Industriepark Süd Betriebsgesellschaft\",\"Industriepark Süd Betriebsgesellschaft\",\"Energie- & Wasserverbund West\"],[245890,68420,512300,389140,780450,142800,94600],[124,35,0,null,210,45,18],[245890,68420,512300,389140,780450,142800,94600],[1761807600000,1761800400000,1761786000000,1761627600000,1761811200000,1761598800000,1761804000000]]}}]"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "testdata", "uid": "trlxrdZVk" },
+      "gridPos": { "h": 18, "w": 24, "x": 0, "y": 22 },
+      "id": 2,
+      "title": "Betreiberansicht (Stadtwerke Sektor Nord)",
+      "type": "asimzulfiqar-customdashboardlist-panel",
+      "options": {
+        "viewMode": "operator",
+        "fieldMappings": {
+          "wellNameField": "title",
+          "wellIdField": "id_raw",
+          "operatorField": "Betreiber",
+          "meterReadingField": "zaehlerstand",
+          "consumption12hField": "verbrauch_12h",
+          "consumptionYearField": "verbrauch_jahr",
+          "lastSeenField": "time"
+        },
+        "header": {
+          "showHeader": true,
+          "headerTitle": "Smart Utility & Grid Operations",
+          "userName": "Max Mustermann",
+          "betreiberkennzahl": "OPS-DE-1044"
+        },
+        "numberFormat": "de-grouped",
+        "readingDecimals": 0,
+        "consumptionDecimals": 0,
+        "meterReadingUnit": "m³",
+        "consumption12hUnit": "m³",
+        "consumptionYearUnit": "m³",
+        "freshnessHoursThreshold": 24,
+        "searchEnabled": false,
+        "defaultExpandedAccordions": true,
+        "showSampleDataOnEmpty": true,
+        "wellLinks": {
+          "wellUrlPattern": "/d/telemetry-detail?var-device_id=${wellId}&from=${from}&to=${to}",
+          "targetDashboardUid": "telemetry-detail",
+          "defaultTimeFrom": "now-7d",
+          "defaultTimeTo": "now",
+          "openInNewTab": false
+        },
+        "quickLinks": {
+          "showGroundwaterLink": false,
+          "groundwaterTitle": "Zentrale Netzüberwachung",
+          "groundwaterLinkLabel": "Zu den Netzmesswerten",
+          "groundwaterUrl": "/d/grid-telemetry",
+          "showWeatherLink": true,
+          "weatherTitle": "Meteorologische Referenzstation",
+          "weatherInternalLinkLabel": "Zu den meteorologischen Stationsdaten",
+          "weatherInternalUrl": "/d/weather-telemetry",
+          "weatherExternalLinkLabel": "Nationaler Wetterdienst (DWD)",
+          "weatherExternalUrl": "https://www.dwd.de"
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "testdata", "uid": "trlxrdZVk" },
+          "refId": "A",
+          "scenarioId": "raw_frame",
+          "rawFrameContent": "[{\"schema\":{\"fields\":[{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"id_raw\",\"type\":\"string\"},{\"name\":\"Betreiber\",\"type\":\"string\"},{\"name\":\"zaehlerstand\",\"type\":\"number\"},{\"name\":\"verbrauch_12h\",\"type\":\"number\"},{\"name\":\"verbrauch_jahr\",\"type\":\"number\"},{\"name\":\"time\",\"type\":\"time\"}]},\"data\":{\"values\":[[\"Einspeisestation Node-Alpha (FL-101)\",\"Druckminderstation Beta (FL-102)\",\"Verteilerknoten Nord 03 (FL-103)\",\"Pumpwerk Zentral 04 (FL-104)\"],[\"FL-101\",\"FL-102\",\"FL-103\",\"FL-104\"],[\"Stadtwerke Sektor Nord (GmbH)\",\"Stadtwerke Sektor Nord (GmbH)\",\"Stadtwerke Sektor Nord (GmbH)\",\"Stadtwerke Sektor Nord (GmbH)\"],[245890,68420,512300,389140],[124,35,0,null],[245890,68420,512300,389140],[1761807600000,1761800400000,1761786000000,1761627600000]]}}]"
+        }
+      ]
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": ["utility", "smart-metering", "grid", "iot"],
+  "time": { "from": "now-6h", "to": "now" },
+  "timezone": "browser",
+  "title": "Smart Utility & Grid Operations Portal",
+  "uid": "smart-utility-portal",
+  "version": 1
+}

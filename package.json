@@ -1,0 +1,75 @@
+{
+  "name": "custom-dashboard-list",
+  "version": "1.0.0",
+  "description": "Dynamic landing page and dashboard list portal for well operators and authorities with grouped status, German number formatting, freshness indicators, and customizable query mappings.",
+  "scripts": {
+    "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
+    "dev": "webpack -w -c ./.config/webpack/webpack.config.ts --env development",
+    "test": "jest --watch --onlyChanged",
+    "test:ci": "jest --passWithNoTests --maxWorkers 4",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "server": "docker compose up --build"
+  },
+  "author": "Asim Zulfiqar",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@grafana/tsconfig": "^2.2.0",
+    "@swc/core": "^1.15.0",
+    "@swc/helpers": "^0.5.0",
+    "@swc/jest": "^0.2.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "copy-webpack-plugin": "^13.0.0",
+    "css-loader": "^7.1.0",
+    "identity-obj-proxy": "^3.0.0",
+    "imports-loader": "^5.0.0",
+    "jest": "^30.5.2",
+    "semver": "^7.7.0",
+    "style-loader": "^4.0.0",
+    "swc-loader": "^0.2.0",
+    "terser-webpack-plugin": "^5.3.0",
+    "typescript": "5.9.2",
+    "webpack": "^5.101.0",
+    "webpack-cli": "^6.0.0",
+    "webpack-subresource-integrity": "^5.1.0",
+    "webpack-virtual-modules": "^0.6.2"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@emotion/css": "11.10.6",
+    "@grafana/data": "13.0.2",
+    "@grafana/i18n": "13.0.2",
+    "@grafana/runtime": "13.0.2",
+    "@grafana/schema": "13.0.2",
+    "@grafana/ui": "13.0.2",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  },
+  "overrides": {
+    "@opentelemetry/core": "^2.8.0",
+    "baseline-browser-mapping": "^2.11.0",
+    "brace-expansion": "^5.0.12",
+    "browserslist": "^4.28.7",
+    "dompurify": "^3.4.0",
+    "expect": "^30.5.2",
+    "fast-uri": "^3.1.8",
+    "immutable": "^5.1.8",
+    "js-cookie": "^3.0.6",
+    "js-yaml": "^4.3.2",
+    "moment": "^2.30.2",
+    "nanoid": "^3.3.18",
+    "postcss": "^8.5.23",
+    "postcss-selector-parser": "^7.1.6",
+    "protobufjs": "^7.6.5",
+    "react-router": "^7.17.1",
+    "serialize-javascript": "^7.0.5",
+    "source-map-js": "^1.2.2",
+    "uuid": "^11.1.1"
+  }
+}
+

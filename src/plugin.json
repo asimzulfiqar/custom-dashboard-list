@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
+  "type": "panel",
+  "name": "Custom Dashboard List",
+  "id": "asimzulfiqar-customdashboardlist-panel",
+  "info": {
+    "keywords": ["water", "metering", "iot", "dashboard-list", "landing", "portal", "wells", "operators", "authorities"],
+    "description": "Dynamic landing page and dashboard portal for well operators and supervisory authorities with grouped status, number formatting, freshness indicators, and customizable query mappings.",
+    "author": {
+      "name": "Asim Zulfiqar"
+    },
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      { "name": "documentation", "url": "https://github.com/asimzulfiqar/custom-dashboard-list#readme" }
+    ],
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "dependencies": {
+    "grafanaDependency": ">=10.0.0",
+    "plugins": []
+  }
+}
