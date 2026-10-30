@@ -180,7 +180,7 @@ export function extractWellRows(
   replaceVariables?: (str: string) => string
 ): {
   rows: WellRow[];
-  detectedRole?: 'authority' | 'operator';
+  detectedRole?: 'authority' | 'operator' | 'admin';
   detectedAuthority?: string;
   detectedBetreiberkennzahl?: string;
   detectedUserName?: string;
@@ -212,8 +212,12 @@ export function extractWellRows(
   const varRole = resolveVar(mappings.roleField);
   const varUser = resolveVar(mappings.userNameField);
 
-  let detectedRole: 'authority' | 'operator' | undefined = varRole
-    ? (varRole.toLowerCase().includes('author') || varRole.toLowerCase().includes('admin') || varRole.toLowerCase().includes('regulat') ? 'authority' : 'operator')
+  let detectedRole: 'authority' | 'operator' | 'admin' | undefined = varRole
+    ? (varRole.toLowerCase().includes('admin')
+        ? 'admin'
+        : varRole.toLowerCase().includes('author') || varRole.toLowerCase().includes('regulat')
+        ? 'authority'
+        : 'operator')
     : undefined;
   let detectedAuthority: string | undefined = varAuth || undefined;
   let detectedBetreiberkennzahl: string | undefined = varBzk || undefined;
@@ -341,7 +345,9 @@ export function extractWellRows(
       }
       if (roleIdx !== -1 && fields[roleIdx].values[r] != null && !detectedRole) {
         const rVal = String(fields[roleIdx].values[r]).toLowerCase();
-        if (rVal.includes('author') || rVal.includes('admin') || rVal.includes('regulat') || rVal.includes('supervis')) {
+        if (rVal.includes('admin')) {
+          detectedRole = 'admin';
+        } else if (rVal.includes('author') || rVal.includes('regulat') || rVal.includes('supervis')) {
           detectedRole = 'authority';
         } else if (rVal.includes('operat') || rVal.includes('client') || rVal.includes('user')) {
           detectedRole = 'operator';

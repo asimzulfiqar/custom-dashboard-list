@@ -7,6 +7,7 @@ import { CustomDashboardListOptions } from '../types';
 interface HeaderSectionProps {
   options: CustomDashboardListOptions;
   isAuthority: boolean;
+  detectedRole?: 'authority' | 'operator' | 'admin';
   detectedAuthority?: string;
   detectedBetreiberkennzahl?: string;
   detectedUserName?: string;
@@ -17,6 +18,7 @@ interface HeaderSectionProps {
 export const HeaderSection: React.FC<HeaderSectionProps> = ({
   options,
   isAuthority,
+  detectedRole,
   detectedAuthority,
   detectedBetreiberkennzahl,
   detectedUserName,
@@ -42,6 +44,12 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
   const authority = detectedAuthority || options.header.authorityName;
   const bzk = detectedBetreiberkennzahl || options.header.betreiberkennzahl;
 
+  // Determine whether to show authority name in parentheses:
+  // - Show for Authorities: Willkommen Max Mustermann (Wasserwirtschaftsamt Aschaffenburg)
+  // - Hide for Admins: Willkommen Max Mustermann
+  const isAdmin = detectedRole === 'admin';
+  const showAuthorityTag = isAuthority && !isAdmin && authority && authority !== 'All Authorities';
+
   return (
     <div className={styles.container}>
       {/* Header Title Banner - only shown if a custom title is explicitly given */}
@@ -66,7 +74,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
           {isAuthority ? (
             <div className={styles.greetingLine}>
               <span className={styles.welcomeTitle}>Willkommen {displayUser}</span>
-              {authority && (
+              {showAuthorityTag && (
                 <span className={styles.authorityTag}> ({authority})</span>
               )}
             </div>

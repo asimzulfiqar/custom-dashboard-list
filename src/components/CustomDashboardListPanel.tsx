@@ -88,7 +88,7 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
     }
 
     // Auto mode
-    if (detectedRole === 'authority') {
+    if (detectedRole === 'authority' || detectedRole === 'admin') {
       return true;
     }
     if (detectedRole === 'operator') {
@@ -120,6 +120,7 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
       <HeaderSection
         options={interpolatedOptions}
         isAuthority={isAuthority}
+        detectedRole={detectedRole}
         detectedAuthority={detectedAuthority}
         detectedBetreiberkennzahl={detectedBetreiberkennzahl}
         detectedUserName={detectedUserName}
