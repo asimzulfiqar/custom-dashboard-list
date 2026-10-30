@@ -60,9 +60,8 @@ export const WellTable: React.FC<WellTableProps> = ({
                 </a>
 
                 <Tooltip content={statusTooltip} placement="top">
-                  <span className={well.isOnline ? styles.statusPillOnline : styles.statusPillOffline}>
+                  <span className={well.isOnline ? styles.dotContainerOnline : styles.dotContainerOffline}>
                     <span className={well.isOnline ? styles.dotOnline : styles.dotOffline} />
-                    {well.isOnline ? 'Online' : (well.lastSeen ? `> ${options.freshnessHoursThreshold || 24}h` : 'Keine Daten')}
                   </span>
                 </Tooltip>
               </div>
@@ -166,9 +165,8 @@ export const WellTable: React.FC<WellTableProps> = ({
 
                 <td className={styles.tdStatus}>
                   <Tooltip content={statusTooltip} placement="top">
-                    <span className={well.isOnline ? styles.statusPillOnline : styles.statusPillOffline}>
+                    <span className={well.isOnline ? styles.dotContainerOnline : styles.dotContainerOffline}>
                       <span className={well.isOnline ? styles.dotOnline : styles.dotOffline} />
-                      {well.isOnline ? 'Online' : (well.lastSeen ? `> ${options.freshnessHoursThreshold || 24}h` : 'Keine Daten')}
                     </span>
                   </Tooltip>
                 </td>
@@ -295,47 +293,47 @@ const getStyles = (theme: GrafanaTheme2) => ({
   wellTitle: css`
     word-break: break-word;
   `,
-  statusPillOnline: css`
+  dotContainerOnline: css`
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 3px 8px;
-    border-radius: ${theme.shape.radius.pill};
-    font-size: ${theme.typography.bodySmall.fontSize};
-    font-weight: ${theme.typography.fontWeightMedium};
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
     background: ${theme.colors.success.transparent};
-    color: ${theme.colors.success.text};
-    border: 1px solid ${theme.colors.success.border};
     cursor: help;
-    white-space: nowrap;
+    transition: transform 0.15s ease-in-out;
+    &:hover {
+      transform: scale(1.2);
+    }
   `,
-  statusPillOffline: css`
+  dotContainerOffline: css`
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 3px 8px;
-    border-radius: ${theme.shape.radius.pill};
-    font-size: ${theme.typography.bodySmall.fontSize};
-    font-weight: ${theme.typography.fontWeightMedium};
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
     background: ${theme.colors.error.transparent};
-    color: ${theme.colors.error.text};
-    border: 1px solid ${theme.colors.error.border};
     cursor: help;
-    white-space: nowrap;
+    transition: transform 0.15s ease-in-out;
+    &:hover {
+      transform: scale(1.2);
+    }
   `,
   dotOnline: css`
-    width: 8px;
-    height: 8px;
+    width: 11px;
+    height: 11px;
     border-radius: 50%;
     background: ${theme.colors.success.text};
-    box-shadow: 0 0 6px ${theme.colors.success.text};
+    box-shadow: 0 0 8px ${theme.colors.success.text};
   `,
   dotOffline: css`
-    width: 8px;
-    height: 8px;
+    width: 11px;
+    height: 11px;
     border-radius: 50%;
     background: ${theme.colors.error.text};
-    box-shadow: 0 0 6px ${theme.colors.error.text};
+    box-shadow: 0 0 8px ${theme.colors.error.text};
   `,
   emptyState: css`
     padding: ${theme.spacing(2)};
