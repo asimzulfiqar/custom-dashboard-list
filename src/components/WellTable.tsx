@@ -62,7 +62,7 @@ export const WellTable: React.FC<WellTableProps> = ({
                 <Tooltip content={statusTooltip} placement="top">
                   <span className={well.isOnline ? styles.statusPillOnline : styles.statusPillOffline}>
                     <span className={well.isOnline ? styles.dotOnline : styles.dotOffline} />
-                    {well.isOnline ? 'Online' : '> 24h'}
+                    {well.isOnline ? 'Online' : (well.lastSeen ? `> ${options.freshnessHoursThreshold || 24}h` : 'Keine Daten')}
                   </span>
                 </Tooltip>
               </div>
@@ -168,7 +168,7 @@ export const WellTable: React.FC<WellTableProps> = ({
                   <Tooltip content={statusTooltip} placement="top">
                     <span className={well.isOnline ? styles.statusPillOnline : styles.statusPillOffline}>
                       <span className={well.isOnline ? styles.dotOnline : styles.dotOffline} />
-                      {well.isOnline ? 'Online' : '> 24h'}
+                      {well.isOnline ? 'Online' : (well.lastSeen ? `> ${options.freshnessHoursThreshold || 24}h` : 'Keine Daten')}
                     </span>
                   </Tooltip>
                 </td>

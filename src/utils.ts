@@ -63,7 +63,7 @@ export function evaluateFreshness(
     };
   }
 
-  const timeMs =
+  let timeMs =
     typeof timestamp === 'number'
       ? timestamp
       : new Date(timestamp).getTime();
@@ -76,10 +76,19 @@ export function evaluateFreshness(
     };
   }
 
+  // Auto-normalize Unix epoch seconds vs milliseconds vs nanoseconds
+  if (timeMs < 1e11) {
+    timeMs *= 1000; // seconds -> ms
+  } else if (timeMs > 1e14) {
+    timeMs = Math.floor(timeMs / 1e6); // nanoseconds -> ms
+  }
+
   const now = Date.now();
   const diffMs = now - timeMs;
   const diffHours = diffMs / (1000 * 60 * 60);
-  const isOnline = diffHours >= 0 && diffHours <= thresholdHours;
+
+  // Allow slight future clock skew (up to -1 hour) from server/device clock drift
+  const isOnline = diffHours >= -1 && diffHours <= thresholdHours;
 
   const dateObj = new Date(timeMs);
   const formattedDate = dateObj.toLocaleString('de-DE', {
