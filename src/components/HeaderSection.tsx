@@ -60,11 +60,6 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
               <h1 className={isNarrow ? styles.mainTitleNarrow : styles.mainTitle}>{title}</h1>
             </div>
           </div>
-
-          <div className={styles.roleBadge}>
-            <Icon name={isAuthority ? 'shield' : 'user'} size="sm" />
-            <span>{isAuthority ? 'Aufsichtsansicht' : 'Betreiberansicht'}</span>
-          </div>
         </div>
       )}
 
@@ -147,19 +142,6 @@ const getStyles = (theme: GrafanaTheme2) => ({
     color: ${theme.colors.text.primary};
     line-height: 1.25;
     word-break: break-word;
-  `,
-  roleBadge: css`
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: ${theme.shape.radius.pill};
-    font-size: ${theme.typography.bodySmall.fontSize};
-    font-weight: ${theme.typography.fontWeightMedium};
-    background: ${theme.colors.background.secondary};
-    border: 1px solid ${theme.colors.border.medium};
-    color: ${theme.colors.text.primary};
-    white-space: nowrap;
   `,
   welcomeCard: css`
     padding: ${theme.spacing(0.5)} 0;
