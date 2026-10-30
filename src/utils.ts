@@ -144,6 +144,20 @@ function findFieldIndex(
   return -1;
 }
 
+function getAppSubUrl(): string {
+  if (typeof window === 'undefined') {
+    return '';
+  }
+  const bootSubUrl = (window as any)?.grafanaBootData?.settings?.appSubUrl;
+  if (bootSubUrl && typeof bootSubUrl === 'string') {
+    return bootSubUrl;
+  }
+  if (window.location && typeof window.location.pathname === 'string' && window.location.pathname.startsWith('/grafana')) {
+    return '/grafana';
+  }
+  return '';
+}
+
 /**
  * Resolve target URL for a dashboard link, interpolating both template variables and well attributes.
  */
@@ -153,22 +167,29 @@ export function buildWellUrl(
   options: CustomDashboardListOptions,
   replaceVariables?: (str: string) => string
 ): string {
-  let pattern = options.wellLinks.wellUrlPattern || '/d/${dashboardUid}?var-device_id=${wellId}&from=${from}&to=${to}';
+  let pattern = options.wellLinks?.wellUrlPattern || '/d/${dashboardUid}?var-GroupWells=$__all&from=${from}&to=${to}';
   if (replaceVariables) {
     pattern = replaceVariables(pattern);
   }
 
-  const targetUid = dashboardUid || (replaceVariables ? replaceVariables(options.wellLinks.targetDashboardUid || '') : options.wellLinks.targetDashboardUid) || '';
-  const from = encodeURIComponent(options.wellLinks.defaultTimeFrom || 'now-7d');
-  const to = encodeURIComponent(options.wellLinks.defaultTimeTo || 'now');
+  const targetUid = dashboardUid || (replaceVariables ? replaceVariables(options.wellLinks?.targetDashboardUid || '') : options.wellLinks?.targetDashboardUid) || '';
+  const from = encodeURIComponent(options.wellLinks?.defaultTimeFrom || 'now-5d');
+  const to = encodeURIComponent(options.wellLinks?.defaultTimeTo || 'now');
 
-  return pattern
+  let resolved = pattern
     .replace(/\${wellId}/g, encodeURIComponent(wellId))
     .replace(/\${id_raw}/g, encodeURIComponent(wellId))
     .replace(/\${id}/g, encodeURIComponent(wellId))
     .replace(/\${dashboardUid}/g, encodeURIComponent(targetUid))
     .replace(/\${from}/g, from)
     .replace(/\${to}/g, to);
+
+  const subUrl = getAppSubUrl();
+  if (subUrl && resolved.startsWith('/') && !resolved.startsWith(subUrl)) {
+    resolved = `${subUrl}${resolved}`;
+  }
+
+  return resolved;
 }
 
 /**

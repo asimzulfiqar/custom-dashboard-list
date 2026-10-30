@@ -267,7 +267,7 @@ export const plugin = new PanelPlugin<CustomDashboardListOptions>(CustomDashboar
       name: 'URL-Muster für Anlagenlink',
       category: ['Anlagen-Verlinkung (Navigation)'],
       description: 'Platzhalter: ${wellId}, ${id_raw}, ${dashboardUid}, ${from}, ${to}',
-      defaultValue: '/d/${dashboardUid}?var-device_id=${wellId}&from=${from}&to=${to}',
+      defaultValue: '/d/${dashboardUid}?var-GroupWells=$__all&from=${from}&to=${to}',
     })
     .addTextInput({
       path: 'wellLinks.targetDashboardUid',
@@ -280,7 +280,7 @@ export const plugin = new PanelPlugin<CustomDashboardListOptions>(CustomDashboar
       path: 'wellLinks.defaultTimeFrom',
       name: 'Standard-Zeitbereich Von',
       category: ['Anlagen-Verlinkung (Navigation)'],
-      defaultValue: 'now-7d',
+      defaultValue: 'now-5d',
     })
     .addTextInput({
       path: 'wellLinks.defaultTimeTo',
