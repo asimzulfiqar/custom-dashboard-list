@@ -169,19 +169,19 @@ const getStyles = (theme: GrafanaTheme2) => ({
     word-break: break-word;
   `,
   welcomeTitle: css`
-    font-size: 20px;
+    font-size: clamp(20px, 1.4vw, 26px);
     font-weight: ${theme.typography.fontWeightBold};
     color: ${theme.colors.text.primary};
   `,
   authorityTag: css`
-    font-size: 20px;
+    font-size: clamp(20px, 1.4vw, 26px);
     font-weight: ${theme.typography.fontWeightMedium};
     color: ${theme.colors.text.primary};
   `,
   bzkLine: css`
-    margin-top: 4px;
-    font-size: 15px;
-    line-height: 1.35;
+    margin-top: 6px;
+    font-size: clamp(15px, 1vw, 18px);
+    line-height: 1.4;
     color: ${theme.colors.text.primary};
   `,
   bzkLabel: css`

@@ -104,7 +104,8 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
       className={isNarrow ? styles.containerNarrow : styles.container}
       style={{
         width: `${width}px`,
-        minHeight: `${height}px`,
+        height: `${height}px`,
+        maxHeight: `${height}px`,
       }}
     >
       {/* Sample Data Banner */}
@@ -162,6 +163,23 @@ const getStyles = (theme: GrafanaTheme2) => ({
     padding: ${theme.spacing(2)};
     box-sizing: border-box;
     overflow-y: auto;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: ${theme.colors.border.medium} transparent;
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: ${theme.colors.border.medium};
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: ${theme.colors.border.strong};
+    }
     display: flex;
     flex-direction: column;
     gap: ${theme.spacing(1.5)};
@@ -172,6 +190,20 @@ const getStyles = (theme: GrafanaTheme2) => ({
     padding: ${theme.spacing(1)};
     box-sizing: border-box;
     overflow-y: auto;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: ${theme.colors.border.medium} transparent;
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: ${theme.colors.border.medium};
+      border-radius: 3px;
+    }
     display: flex;
     flex-direction: column;
     gap: ${theme.spacing(1.25)};

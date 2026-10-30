@@ -188,47 +188,63 @@ const getStyles = (theme: GrafanaTheme2) => ({
     border: 1px solid ${theme.colors.border.weak};
     border-radius: ${theme.shape.radius.default};
     background: ${theme.colors.background.primary};
+    scrollbar-width: thin;
+    scrollbar-color: ${theme.colors.border.medium} transparent;
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: ${theme.colors.border.medium};
+      border-radius: 3px;
+    }
   `,
   table: css`
     width: 100%;
     border-collapse: collapse;
-    font-size: ${theme.typography.bodySmall.fontSize};
+    font-size: clamp(14px, 0.95vw, 17px);
     text-align: left;
   `,
   thWell: css`
-    padding: ${theme.spacing(1)} ${theme.spacing(1.5)};
+    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
     background: ${theme.colors.background.secondary};
     color: ${theme.colors.text.secondary};
+    font-size: clamp(13px, 0.9vw, 16px);
     font-weight: ${theme.typography.fontWeightBold};
     border-bottom: 2px solid ${theme.colors.border.medium};
     min-width: 240px;
   `,
   thOperator: css`
-    padding: ${theme.spacing(1)} ${theme.spacing(1.5)};
+    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
     background: ${theme.colors.background.secondary};
     color: ${theme.colors.text.secondary};
+    font-size: clamp(13px, 0.9vw, 16px);
     font-weight: ${theme.typography.fontWeightBold};
     border-bottom: 2px solid ${theme.colors.border.medium};
     min-width: 150px;
   `,
   thNumber: css`
-    padding: ${theme.spacing(1)} ${theme.spacing(1.5)};
+    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
     background: ${theme.colors.background.secondary};
     color: ${theme.colors.text.secondary};
+    font-size: clamp(13px, 0.9vw, 16px);
     font-weight: ${theme.typography.fontWeightBold};
     border-bottom: 2px solid ${theme.colors.border.medium};
     text-align: right;
     white-space: nowrap;
-    min-width: 140px;
+    min-width: 150px;
   `,
   thStatus: css`
-    padding: ${theme.spacing(1)} ${theme.spacing(1.5)};
+    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
     background: ${theme.colors.background.secondary};
     color: ${theme.colors.text.secondary};
+    font-size: clamp(13px, 0.9vw, 16px);
     font-weight: ${theme.typography.fontWeightBold};
     border-bottom: 2px solid ${theme.colors.border.medium};
     text-align: center;
-    width: 110px;
+    width: 120px;
   `,
   row: css`
     border-bottom: 1px solid ${theme.colors.border.weak};
@@ -238,32 +254,36 @@ const getStyles = (theme: GrafanaTheme2) => ({
     }
   `,
   tdWell: css`
-    padding: ${theme.spacing(1)} ${theme.spacing(1.5)};
+    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
+    font-size: clamp(14px, 1vw, 17px);
     font-weight: ${theme.typography.fontWeightMedium};
   `,
   tdOperator: css`
-    padding: ${theme.spacing(1)} ${theme.spacing(1.5)};
+    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
+    font-size: clamp(14px, 0.95vw, 16px);
     color: ${theme.colors.text.secondary};
   `,
   tdNumber: css`
-    padding: ${theme.spacing(1)} ${theme.spacing(1.5)};
+    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
     text-align: right;
+    font-size: clamp(14px, 1vw, 17px);
     font-family: ${theme.typography.fontFamilyMonospace};
     font-weight: ${theme.typography.fontWeightMedium};
     color: ${theme.colors.text.primary};
   `,
   tdStatus: css`
-    padding: ${theme.spacing(1)} ${theme.spacing(1.5)};
+    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
     text-align: center;
   `,
   wellLink: css`
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    font-size: clamp(14px, 1vw, 17px);
     color: ${theme.colors.primary.text};
     text-decoration: none;
     cursor: pointer;
-    line-height: 1.3;
+    line-height: 1.35;
     &:hover {
       text-decoration: underline;
     }

@@ -267,12 +267,12 @@ const getStyles = (theme: GrafanaTheme2) => ({
     flex-shrink: 0;
   `,
   operatorTitle: css`
-    font-size: 15px;
+    font-size: clamp(16px, 1.1vw, 20px);
     font-weight: ${theme.typography.fontWeightBold};
     color: ${theme.colors.text.primary};
   `,
   wellCountBadge: css`
-    font-size: 11px;
+    font-size: clamp(11px, 0.75vw, 13px);
     background: ${theme.colors.background.canvas};
     border: 1px solid ${theme.colors.border.weak};
     padding: 2px 7px;
@@ -281,7 +281,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
     white-space: nowrap;
   `,
   bzkBadge: css`
-    font-size: 11px;
+    font-size: clamp(11px, 0.75vw, 13px);
     font-family: ${theme.typography.fontFamilyMonospace};
     background: ${theme.colors.background.canvas};
     border: 1px solid ${theme.colors.border.weak};
@@ -307,12 +307,13 @@ const getStyles = (theme: GrafanaTheme2) => ({
     flex-wrap: wrap;
   `,
   summaryMetric: css`
-    font-size: ${theme.typography.bodySmall.fontSize};
+    font-size: clamp(13px, 0.9vw, 16px);
     color: ${theme.colors.text.secondary};
     white-space: nowrap;
     strong {
       color: ${theme.colors.text.primary};
       font-family: ${theme.typography.fontFamilyMonospace};
+      font-size: clamp(13px, 0.9vw, 16px);
     }
   `,
   statusSummary: css`
