@@ -11,6 +11,7 @@ interface HeaderSectionProps {
   detectedAuthority?: string;
   detectedBetreiberkennzahl?: string;
   detectedUserName?: string;
+  operatorName?: string;
   currentUsername?: string;
   isNarrow?: boolean;
 }
@@ -22,6 +23,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
   detectedAuthority,
   detectedBetreiberkennzahl,
   detectedUserName,
+  operatorName,
   currentUsername,
   isNarrow = false,
 }) => {
@@ -32,12 +34,27 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
   }
 
   const title = options.header.headerTitle;
-  // If configured userName is just a numeric ID (e.g. "38"), ignore it in favor of detected name or fallback
+
+  // Helper: check if a string is just a numeric ID (e.g. "38", "'38'", "4110602600116")
+  const isPureId = (val?: string) => {
+    if (!val) {
+      return true;
+    }
+    const clean = val.replace(/['"]/g, '').trim();
+    return /^\d+$/.test(clean);
+  };
+
   const rawOptionUser = (options.header.userName || '').trim();
-  const isOptionUserAnId = /^\d+$/.test(rawOptionUser);
+  const validOptionUser = !isPureId(rawOptionUser) ? rawOptionUser : undefined;
+  const validDetectedUser = !isPureId(detectedUserName) ? detectedUserName : undefined;
+
+  // Prioritize real person / operator name over numeric IDs:
+  // For operators: use detected user name or the real operator name (e.g. "Appelmann, Erhard")
   const displayUser =
-    detectedUserName ||
-    (!isOptionUserAnId && rawOptionUser ? rawOptionUser : undefined) ||
+    validDetectedUser ||
+    (!isAuthority && operatorName ? operatorName : undefined) ||
+    validOptionUser ||
+    operatorName ||
     currentUsername ||
     'Benutzer';
 

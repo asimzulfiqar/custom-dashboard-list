@@ -129,6 +129,7 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
         detectedAuthority={detectedAuthority}
         detectedBetreiberkennzahl={detectedBetreiberkennzahl}
         detectedUserName={detectedUserName}
+        operatorName={rows.length > 0 ? rows[0].operator : undefined}
         isNarrow={isNarrow}
       />
 
