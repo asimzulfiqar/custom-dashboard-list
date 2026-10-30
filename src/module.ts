@@ -232,6 +232,13 @@ export const plugin = new PanelPlugin<CustomDashboardListOptions>(CustomDashboar
       defaultValue: 'Hauptbetreiber',
     })
     .addBooleanSwitch({
+      path: 'autoHeight',
+      name: 'Dynamische Höhe (Alle Daten ohne innere Scrollbox anzeigen)',
+      category: ['Formatierung & Status'],
+      description: 'Passt die Panel-Höhe dynamisch an den Inhalt an: klein bei wenigen Brunnen, groß bei vielen Brunnen.',
+      defaultValue: true,
+    })
+    .addBooleanSwitch({
       path: 'searchEnabled',
       name: 'Suchleiste aktivieren (Aufsichtsansicht)',
       category: ['Formatierung & Status'],

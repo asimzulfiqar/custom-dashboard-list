@@ -99,13 +99,18 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
     return groups.length > 1;
   }, [interpolatedOptions.viewMode, detectedRole, groups.length]);
 
+  const isAutoHeight = interpolatedOptions.autoHeight ?? true;
+
   return (
     <div
       className={isNarrow ? styles.containerNarrow : styles.container}
       style={{
         width: `${width}px`,
-        height: `${height}px`,
-        maxHeight: `${height}px`,
+        height: isAutoHeight ? 'auto' : `${height}px`,
+        minHeight: isAutoHeight ? 'auto' : `${height}px`,
+        maxHeight: isAutoHeight ? 'none' : `${height}px`,
+        overflowY: isAutoHeight ? 'visible' : 'auto',
+        overflowX: 'auto',
       }}
     >
       {/* Sample Data Banner */}
