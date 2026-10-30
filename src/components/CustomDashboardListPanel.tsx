@@ -17,24 +17,58 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
   data,
   width,
   height,
+  replaceVariables,
 }) => {
   const styles = useStyles2(getStyles);
 
   // Responsive breakpoint: narrow panel (mobile screen or narrow column < 680px)
   const isNarrow = width < 680;
 
-  // Extract and merge rows from all query data frames
+  // Resolve template variables in options
+  const interpolatedOptions = useMemo<CustomDashboardListOptions>(() => {
+    if (!replaceVariables) {
+      return options;
+    }
+    return {
+      ...options,
+      header: {
+        ...options.header,
+        headerTitle: replaceVariables(options.header.headerTitle || ''),
+        userName: replaceVariables(options.header.userName || ''),
+        authorityName: replaceVariables(options.header.authorityName || ''),
+        betreiberkennzahl: replaceVariables(options.header.betreiberkennzahl || ''),
+      },
+      quickLinks: {
+        ...options.quickLinks,
+        groundwaterTitle: replaceVariables(options.quickLinks.groundwaterTitle || ''),
+        groundwaterLinkLabel: replaceVariables(options.quickLinks.groundwaterLinkLabel || ''),
+        groundwaterUrl: replaceVariables(options.quickLinks.groundwaterUrl || ''),
+        weatherTitle: replaceVariables(options.quickLinks.weatherTitle || ''),
+        weatherInternalLinkLabel: replaceVariables(options.quickLinks.weatherInternalLinkLabel || ''),
+        weatherInternalUrl: replaceVariables(options.quickLinks.weatherInternalUrl || ''),
+        weatherExternalLinkLabel: replaceVariables(options.quickLinks.weatherExternalLinkLabel || ''),
+        weatherExternalUrl: replaceVariables(options.quickLinks.weatherExternalUrl || ''),
+      },
+      wellLinks: {
+        ...options.wellLinks,
+        wellUrlPattern: replaceVariables(options.wellLinks.wellUrlPattern || ''),
+        targetDashboardUid: replaceVariables(options.wellLinks.targetDashboardUid || ''),
+      },
+    };
+  }, [options, replaceVariables]);
+
+  // Extract and merge rows from all query data frames, resolving any mapped dashboard variables
   const { extractedRows, detectedRole, detectedAuthority, detectedBetreiberkennzahl } = useMemo(() => {
-    const res = extractWellRows(data.series || [], options);
+    const res = extractWellRows(data.series || [], interpolatedOptions, replaceVariables);
     return {
       extractedRows: res.rows,
       detectedRole: res.detectedRole,
       detectedAuthority: res.detectedAuthority,
       detectedBetreiberkennzahl: res.detectedBetreiberkennzahl,
     };
-  }, [data.series, options]);
+  }, [data.series, interpolatedOptions, replaceVariables]);
 
-  const showSample = options.showSampleDataOnEmpty ?? true;
+  const showSample = interpolatedOptions.showSampleDataOnEmpty ?? true;
   const isUsingSampleData = extractedRows.length === 0 && showSample;
   const rows = isUsingSampleData ? SAMPLE_WELL_ROWS : extractedRows;
 
@@ -45,10 +79,10 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
 
   // Determine whether to display Authority or Operator layout
   const isAuthority = useMemo(() => {
-    if (options.viewMode === 'authority') {
+    if (interpolatedOptions.viewMode === 'authority') {
       return true;
     }
-    if (options.viewMode === 'operator') {
+    if (interpolatedOptions.viewMode === 'operator') {
       return false;
     }
 
@@ -62,7 +96,7 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
 
     // Heuristic: If more than 1 operator is present in data, this is an authority / multi-operator overview
     return groups.length > 1;
-  }, [options.viewMode, detectedRole, groups.length]);
+  }, [interpolatedOptions.viewMode, detectedRole, groups.length]);
 
   return (
     <div
@@ -82,7 +116,7 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
 
       {/* Header & Greeting Banner */}
       <HeaderSection
-        options={options}
+        options={interpolatedOptions}
         isAuthority={isAuthority}
         detectedAuthority={detectedAuthority}
         detectedBetreiberkennzahl={detectedBetreiberkennzahl}
@@ -102,7 +136,7 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
           </div>
         </div>
       ) : isAuthority ? (
-        <BetreiberAccordion groups={groups} options={options} isNarrow={isNarrow} />
+        <BetreiberAccordion groups={groups} options={interpolatedOptions} isNarrow={isNarrow} />
       ) : (
         <div className={styles.operatorWellSection}>
           <div className={styles.sectionHeader}>
@@ -111,12 +145,12 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
               Anlagenübersicht ({rows.length} {rows.length === 1 ? 'Station' : 'Stationen'})
             </h3>
           </div>
-          <WellTable wells={rows} options={options} showOperatorColumn={false} isNarrow={isNarrow} />
+          <WellTable wells={rows} options={interpolatedOptions} showOperatorColumn={false} isNarrow={isNarrow} />
         </div>
       )}
 
       {/* Quick Links & Weather */}
-      <QuickLinksSection options={options} isAuthority={isAuthority} isNarrow={isNarrow} />
+      <QuickLinksSection options={interpolatedOptions} isAuthority={isAuthority} isNarrow={isNarrow} />
     </div>
   );
 };

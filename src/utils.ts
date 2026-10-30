@@ -136,15 +136,20 @@ function findFieldIndex(
 }
 
 /**
- * Resolve target URL for a dashboard link.
+ * Resolve target URL for a dashboard link, interpolating both template variables and well attributes.
  */
 export function buildWellUrl(
   wellId: string,
   dashboardUid: string,
-  options: CustomDashboardListOptions
+  options: CustomDashboardListOptions,
+  replaceVariables?: (str: string) => string
 ): string {
-  const pattern = options.wellLinks.wellUrlPattern || '/d/${dashboardUid}?var-device_id=${wellId}&from=${from}&to=${to}';
-  const targetUid = dashboardUid || options.wellLinks.targetDashboardUid || '';
+  let pattern = options.wellLinks.wellUrlPattern || '/d/${dashboardUid}?var-device_id=${wellId}&from=${from}&to=${to}';
+  if (replaceVariables) {
+    pattern = replaceVariables(pattern);
+  }
+
+  const targetUid = dashboardUid || (replaceVariables ? replaceVariables(options.wellLinks.targetDashboardUid || '') : options.wellLinks.targetDashboardUid) || '';
   const from = encodeURIComponent(options.wellLinks.defaultTimeFrom || 'now-7d');
   const to = encodeURIComponent(options.wellLinks.defaultTimeTo || 'now');
 
@@ -158,11 +163,12 @@ export function buildWellUrl(
 }
 
 /**
- * Parse and merge rows from Grafana DataFrames.
+ * Parse and merge rows from Grafana DataFrames with support for dashboard template variables.
  */
 export function extractWellRows(
   series: DataFrame[],
-  options: CustomDashboardListOptions
+  options: CustomDashboardListOptions,
+  replaceVariables?: (str: string) => string
 ): { rows: WellRow[]; detectedRole?: 'authority' | 'operator'; detectedAuthority?: string; detectedBetreiberkennzahl?: string } {
   if (!series || series.length === 0) {
     return { rows: [] };
@@ -171,9 +177,30 @@ export function extractWellRows(
   const mappings: FieldMappings = options.fieldMappings || {};
   const rowsMap = new Map<string, Partial<WellRow>>();
 
-  let detectedRole: 'authority' | 'operator' | undefined;
-  let detectedAuthority: string | undefined;
-  let detectedBetreiberkennzahl: string | undefined;
+  // Variable fallbacks if fields are configured as dashboard variables (e.g. ${operator}, ${id}, ${bzk})
+  const resolveVar = (val?: string): string => {
+    if (!val) {
+      return '';
+    }
+    if (replaceVariables && (val.includes('$') || val.includes('{'))) {
+      const res = replaceVariables(val);
+      return res !== val ? res : '';
+    }
+    return '';
+  };
+
+  const varOperator = resolveVar(mappings.operatorField);
+  const varWellId = resolveVar(mappings.wellIdField);
+  const varWellName = resolveVar(mappings.wellNameField);
+  const varBzk = resolveVar(mappings.betreiberkennzahlField);
+  const varAuth = resolveVar(mappings.authorityNameField);
+  const varRole = resolveVar(mappings.roleField);
+
+  let detectedRole: 'authority' | 'operator' | undefined = varRole
+    ? (varRole.toLowerCase().includes('author') || varRole.toLowerCase().includes('admin') || varRole.toLowerCase().includes('regulat') ? 'authority' : 'operator')
+    : undefined;
+  let detectedAuthority: string | undefined = varAuth || undefined;
+  let detectedBetreiberkennzahl: string | undefined = varBzk || undefined;
 
   for (const frame of series) {
     const fields = frame.fields;
@@ -196,8 +223,8 @@ export function extractWellRows(
     const roleIdx = findFieldIndex(fields, mappings.roleField, [/role/i, /user_type/i]);
 
     for (let r = 0; r < rowCount; r++) {
-      const rawId = idIdx !== -1 ? String(fields[idIdx].values[r] ?? '') : '';
-      const rawName = nameIdx !== -1 ? String(fields[nameIdx].values[r] ?? '') : '';
+      const rawId = idIdx !== -1 ? String(fields[idIdx].values[r] ?? '') : (varWellId || '');
+      const rawName = nameIdx !== -1 ? String(fields[nameIdx].values[r] ?? '') : (varWellName || '');
       const key = rawId || rawName || `row-${r}`;
 
       if (!key) {
@@ -207,7 +234,7 @@ export function extractWellRows(
       const existing = rowsMap.get(key) || {
         id: rawId || key,
         name: rawName || rawId || 'Messstelle',
-        operator: 'Hauptbetreiber',
+        operator: varOperator || 'Hauptbetreiber',
       };
 
       if (rawId) {
@@ -218,13 +245,19 @@ export function extractWellRows(
       }
       if (operatorIdx !== -1 && fields[operatorIdx].values[r] != null) {
         existing.operator = String(fields[operatorIdx].values[r]);
+      } else if (varOperator && (!existing.operator || existing.operator === 'Hauptbetreiber')) {
+        existing.operator = varOperator;
       }
+
       if (bzkIdx !== -1 && fields[bzkIdx].values[r] != null) {
         existing.betreiberkennzahl = String(fields[bzkIdx].values[r]);
         if (!detectedBetreiberkennzahl) {
           detectedBetreiberkennzahl = existing.betreiberkennzahl;
         }
+      } else if (varBzk && !existing.betreiberkennzahl) {
+        existing.betreiberkennzahl = varBzk;
       }
+
       if (readingIdx !== -1 && fields[readingIdx].values[r] != null) {
         const val = Number(fields[readingIdx].values[r]);
         if (!isNaN(val)) {
@@ -279,16 +312,16 @@ export function extractWellRows(
   const rows: WellRow[] = Array.from(rowsMap.values()).map((p) => {
     const id = p.id || 'unbekannt';
     const name = p.name || id;
-    const operator = p.operator || 'Allgemein';
+    const operator = p.operator || varOperator || 'Allgemein';
     const freshness = evaluateFreshness(p.lastSeen, options.freshnessHoursThreshold || 24);
     const isOnline = p.isOnline !== undefined ? p.isOnline : freshness.isOnline;
-    const targetUrl = buildWellUrl(id, p.dashboardUid || '', options);
+    const targetUrl = buildWellUrl(id, p.dashboardUid || '', options, replaceVariables);
 
     return {
       id,
       name,
       operator,
-      betreiberkennzahl: p.betreiberkennzahl,
+      betreiberkennzahl: p.betreiberkennzahl || varBzk,
       meterReading: p.meterReading ?? null,
       consumption12h: p.consumption12h ?? null,
       consumptionYear: p.consumptionYear ?? null,
