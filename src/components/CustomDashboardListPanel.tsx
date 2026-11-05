@@ -21,8 +21,8 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
 }) => {
   const styles = useStyles2(getStyles);
 
-  // Responsive breakpoint: narrow panel (mobile screen or narrow column < 680px)
-  const isNarrow = width < 680;
+  // Responsive breakpoint: narrow panel (mobile screen or narrow column < 720px)
+  const isNarrow = width < 720;
 
   // Resolve template variables in options
   const interpolatedOptions = useMemo<CustomDashboardListOptions>(() => {
@@ -171,21 +171,23 @@ const getStyles = (theme: GrafanaTheme2) => ({
     box-sizing: border-box;
     overflow-y: auto;
     overflow-x: auto;
+    scrollbar-gutter: stable;
     scrollbar-width: thin;
-    scrollbar-color: ${theme.colors.border.medium} transparent;
+    scrollbar-color: ${theme.colors.border.strong} ${theme.colors.background.secondary};
     &::-webkit-scrollbar {
       width: 8px;
       height: 8px;
     }
     &::-webkit-scrollbar-track {
-      background: transparent;
+      background: ${theme.colors.background.secondary};
+      border-radius: 4px;
     }
     &::-webkit-scrollbar-thumb {
-      background: ${theme.colors.border.medium};
+      background: ${theme.colors.border.strong};
       border-radius: 4px;
     }
     &::-webkit-scrollbar-thumb:hover {
-      background: ${theme.colors.border.strong};
+      background: ${theme.colors.text.secondary};
     }
     display: flex;
     flex-direction: column;
@@ -198,22 +200,24 @@ const getStyles = (theme: GrafanaTheme2) => ({
     box-sizing: border-box;
     overflow-y: auto;
     overflow-x: auto;
+    scrollbar-gutter: stable;
     scrollbar-width: thin;
-    scrollbar-color: ${theme.colors.border.medium} transparent;
+    scrollbar-color: ${theme.colors.border.strong} ${theme.colors.background.secondary};
     &::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
     &::-webkit-scrollbar-track {
-      background: transparent;
+      background: ${theme.colors.background.secondary};
+      border-radius: 3px;
     }
     &::-webkit-scrollbar-thumb {
-      background: ${theme.colors.border.medium};
+      background: ${theme.colors.border.strong};
       border-radius: 3px;
     }
     display: flex;
     flex-direction: column;
-    gap: ${theme.spacing(1.25)};
+    gap: ${theme.spacing(1)};
     font-family: ${theme.typography.fontFamily};
     color: ${theme.colors.text.primary};
   `,

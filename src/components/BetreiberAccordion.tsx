@@ -133,42 +133,88 @@ export const BetreiberAccordion: React.FC<BetreiberAccordionProps> = ({
             return (
               <div key={group.operatorName} className={styles.groupCard}>
                 {/* Accordion Header */}
-                <div
-                  className={isNarrow ? styles.groupHeaderNarrow : styles.groupHeader}
-                  onClick={() => toggleGroup(group.operatorName)}
-                  role="button"
-                  tabIndex={0}
-                >
-                  <div className={styles.groupHeaderLeft}>
-                    <Icon
-                      name={isExpanded ? 'angle-down' : 'angle-right'}
-                      size="md"
-                      className={styles.chevronIcon}
-                    />
-                    <span className={styles.operatorTitle}>{group.operatorName}</span>
-                    <span className={styles.wellCountBadge}>
-                      {group.wells.length} Stationen
-                    </span>
-                    {group.betreiberkennzahl && (
-                      <span className={styles.bzkBadge}>ID: {group.betreiberkennzahl}</span>
-                    )}
-                  </div>
+                {isNarrow ? (
+                  <div
+                    className={styles.groupHeaderMobile}
+                    onClick={() => toggleGroup(group.operatorName)}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    {/* Row 1: Chevron + Title on Left, Status Dots on Right */}
+                    <div className={styles.mobileHeaderRowTop}>
+                      <div className={styles.mobileHeaderTitleGroup}>
+                        <Icon
+                          name={isExpanded ? 'angle-down' : 'angle-right'}
+                          size="md"
+                          className={styles.chevronIcon}
+                        />
+                        <span className={styles.operatorTitleMobile}>{group.operatorName}</span>
+                      </div>
+                      <div className={styles.statusSummaryMobile}>
+                        <span className={styles.onlineBadge} title="Online Stationen">🟢 {group.onlineCount}</span>
+                        <span className={group.offlineCount > 0 ? styles.offlineBadge : styles.offlineZeroBadge} title="Offline Stationen">
+                          🔴 {group.offlineCount}
+                        </span>
+                      </div>
+                    </div>
 
-                  <div className={isNarrow ? styles.groupHeaderRightNarrow : styles.groupHeaderRight}>
-                    <span className={styles.summaryMetric}>
-                      12h: <strong>{formatMetricValue(group.totalConsumption12h, format, consumptionDecimals, options.consumption12hUnit || 'm³')}</strong>
-                    </span>
-                    <span className={styles.summaryMetric}>
-                      Jahr: <strong>{formatMetricValue(group.totalConsumptionYear, format, consumptionDecimals, options.consumptionYearUnit || 'm³')}</strong>
-                    </span>
-                    <div className={styles.statusSummary}>
-                      <span className={styles.onlineBadge} title="Online Stationen">🟢 {group.onlineCount}</span>
-                      <span className={group.offlineCount > 0 ? styles.offlineBadge : styles.offlineZeroBadge} title="Offline Stationen">
-                        🔴 {group.offlineCount}
+                    {/* Row 2: Stations count, ID, 12h, Jahr */}
+                    <div className={styles.mobileHeaderRowBottom}>
+                      <span className={styles.wellCountBadge}>
+                        {group.wells.length} {group.wells.length === 1 ? 'Station' : 'Stationen'}
+                      </span>
+                      {group.betreiberkennzahl && (
+                        <span className={styles.bzkBadge}>ID: {group.betreiberkennzahl}</span>
+                      )}
+                      <span className={styles.mobileMetricDivider}>|</span>
+                      <span className={styles.summaryMetricMobile}>
+                        12h: <strong>{formatMetricValue(group.totalConsumption12h, format, consumptionDecimals, options.consumption12hUnit || 'm³')}</strong>
+                      </span>
+                      <span className={styles.mobileBullet}>•</span>
+                      <span className={styles.summaryMetricMobile}>
+                        Jahr: <strong>{formatMetricValue(group.totalConsumptionYear, format, consumptionDecimals, options.consumptionYearUnit || 'm³')}</strong>
                       </span>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  /* Desktop Single-Line Header: ALL METRICS IN ONE STRICT HORIZONTAL ROW */
+                  <div
+                    className={styles.groupHeader}
+                    onClick={() => toggleGroup(group.operatorName)}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <div className={styles.groupHeaderLeft}>
+                      <Icon
+                        name={isExpanded ? 'angle-down' : 'angle-right'}
+                        size="md"
+                        className={styles.chevronIcon}
+                      />
+                      <span className={styles.operatorTitle}>{group.operatorName}</span>
+                      <span className={styles.wellCountBadge}>
+                        {group.wells.length} {group.wells.length === 1 ? 'Station' : 'Stationen'}
+                      </span>
+                      {group.betreiberkennzahl && (
+                        <span className={styles.bzkBadge}>ID: {group.betreiberkennzahl}</span>
+                      )}
+                    </div>
+
+                    <div className={styles.groupHeaderRight}>
+                      <span className={styles.summaryMetric}>
+                        12h: <strong>{formatMetricValue(group.totalConsumption12h, format, consumptionDecimals, options.consumption12hUnit || 'm³')}</strong>
+                      </span>
+                      <span className={styles.summaryMetric}>
+                        Jahr: <strong>{formatMetricValue(group.totalConsumptionYear, format, consumptionDecimals, options.consumptionYearUnit || 'm³')}</strong>
+                      </span>
+                      <div className={styles.statusSummary}>
+                        <span className={styles.onlineBadge} title="Online Stationen">🟢 {group.onlineCount}</span>
+                        <span className={group.offlineCount > 0 ? styles.offlineBadge : styles.offlineZeroBadge} title="Offline Stationen">
+                          🔴 {group.offlineCount}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Accordion Content */}
                 {isExpanded && (
@@ -235,24 +281,27 @@ const getStyles = (theme: GrafanaTheme2) => ({
     border-radius: ${theme.shape.radius.default};
     background: ${theme.colors.background.secondary};
     overflow-x: auto;
+    scrollbar-gutter: stable;
     scrollbar-width: thin;
-    scrollbar-color: ${theme.colors.border.medium} transparent;
+    scrollbar-color: ${theme.colors.border.strong} ${theme.colors.background.secondary};
     &::-webkit-scrollbar {
-      height: 6px;
+      height: 8px;
     }
     &::-webkit-scrollbar-track {
-      background: transparent;
+      background: ${theme.colors.background.secondary};
+      border-radius: 4px;
     }
     &::-webkit-scrollbar-thumb {
-      background: ${theme.colors.border.medium};
-      border-radius: 3px;
+      background: ${theme.colors.border.strong};
+      border-radius: 4px;
     }
     &::-webkit-scrollbar-thumb:hover {
-      background: ${theme.colors.border.strong};
+      background: ${theme.colors.text.secondary};
     }
   `,
   groupHeader: css`
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     gap: ${theme.spacing(2)};
@@ -261,17 +310,17 @@ const getStyles = (theme: GrafanaTheme2) => ({
     cursor: pointer;
     user-select: none;
     transition: background 0.15s ease-in-out;
+    white-space: nowrap;
     min-width: max-content;
     &:hover {
       background: ${theme.colors.action.hover};
     }
   `,
-  groupHeaderNarrow: css`
+  groupHeaderMobile: css`
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: ${theme.spacing(1)};
-    padding: ${theme.spacing(1.2)} ${theme.spacing(1.5)};
+    gap: ${theme.spacing(0.75)};
+    padding: ${theme.spacing(1)} ${theme.spacing(1.25)};
     background: ${theme.colors.background.secondary};
     cursor: pointer;
     user-select: none;
@@ -280,6 +329,63 @@ const getStyles = (theme: GrafanaTheme2) => ({
       background: ${theme.colors.action.hover};
     }
   `,
+  mobileHeaderRowTop: css`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: ${theme.spacing(1)};
+  `,
+  mobileHeaderTitleGroup: css`
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    flex: 1;
+  `,
+  operatorTitleMobile: css`
+    font-size: 15px;
+    font-weight: ${theme.typography.fontWeightBold};
+    color: ${theme.colors.text.primary};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `,
+  statusSummaryMobile: css`
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  `,
+  mobileHeaderRowBottom: css`
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 11px;
+    color: ${theme.colors.text.secondary};
+  `,
+  summaryMetricMobile: css`
+    font-size: 11px;
+    color: ${theme.colors.text.secondary};
+    white-space: nowrap;
+    strong {
+      color: ${theme.colors.text.primary};
+      font-family: ${theme.typography.fontFamilyMonospace};
+      font-weight: ${theme.typography.fontWeightMedium};
+    }
+  `,
+  mobileMetricDivider: css`
+    color: ${theme.colors.border.medium};
+    margin: 0 2px;
+    font-size: 10px;
+  `,
+  mobileBullet: css`
+    color: ${theme.colors.text.disabled};
+    font-size: 9px;
+  `,
   groupHeaderLeft: css`
     display: flex;
     align-items: center;
@@ -287,6 +393,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
     flex-wrap: nowrap;
     min-width: 0;
     flex: 1;
+    white-space: nowrap;
   `,
   chevronIcon: css`
     color: ${theme.colors.text.secondary};
@@ -296,6 +403,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
     font-size: clamp(16px, 1.1vw, 20px);
     font-weight: ${theme.typography.fontWeightBold};
     color: ${theme.colors.text.primary};
+    white-space: nowrap;
   `,
   wellCountBadge: css`
     font-size: clamp(11px, 0.75vw, 13px);
@@ -318,23 +426,12 @@ const getStyles = (theme: GrafanaTheme2) => ({
   `,
   groupHeaderRight: css`
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: ${theme.spacing(2)};
-    flex-wrap: nowrap;
+    gap: ${theme.spacing(2.5)};
+    flex-wrap: nowrap !important;
     flex-shrink: 0;
     white-space: nowrap;
-  `,
-  groupHeaderRightNarrow: css`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding-top: 6px;
-    border-top: 1px solid ${theme.colors.border.weak};
-    gap: ${theme.spacing(1.5)};
-    flex-wrap: nowrap;
-    white-space: nowrap;
-    overflow-x: auto;
   `,
   summaryMetric: css`
     font-size: clamp(13px, 0.9vw, 16px);

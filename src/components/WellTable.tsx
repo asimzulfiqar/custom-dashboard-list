@@ -34,7 +34,7 @@ export const WellTable: React.FC<WellTableProps> = ({
   const openNewTab = options.wellLinks.openInNewTab;
 
   // -------------------------------------------------------------
-  // Mobile / Narrow Card View
+  // Mobile / Narrow Card View (Ultra-Compact High Density)
   // -------------------------------------------------------------
   if (isNarrow) {
     return (
@@ -46,8 +46,8 @@ export const WellTable: React.FC<WellTableProps> = ({
 
           return (
             <div key={well.id} className={styles.mobileCard}>
-              {/* Card Header: Device Name & Status Pill */}
-              <div className={styles.mobileCardHeader}>
+              {/* Row 1: Well Name Link + Funkstatus Dot */}
+              <div className={styles.mobileRowTop}>
                 <a
                   href={well.targetUrl}
                   target={openNewTab ? '_blank' : '_self'}
@@ -66,43 +66,39 @@ export const WellTable: React.FC<WellTableProps> = ({
                 </Tooltip>
               </div>
 
-              {/* Sub-info if operator or ID available */}
-              {(showOperatorColumn && well.operator) && (
-                <div className={styles.mobileCardSub}>
-                  <Icon name="user" size="xs" /> {well.operator}
-                </div>
-              )}
-
-              {/* Responsive Metrics Grid */}
-              <div className={styles.mobileMetricsGrid}>
-                <div className={styles.mobileMetricBox}>
-                  <span className={styles.metricLabel}>Letzter Zählerstand</span>
-                  <span className={styles.metricVal}>
+              {/* Row 2: Zählerstand & Optional Operator */}
+              <div className={styles.mobileRowMiddle}>
+                <div className={styles.mobileMeterGroup}>
+                  <span className={styles.mobileLabel}>Zählerstand:</span>
+                  <span className={styles.mobileValBold}>
                     {formatMetricValue(well.meterReading, format, readingDecimals, options.meterReadingUnit || 'm³')}
                   </span>
                 </div>
-
-                <div className={styles.mobileMetricBox}>
-                  <span className={styles.metricLabel}>Wasserentnahme 12h</span>
-                  <span className={styles.metricVal}>
-                    {formatMetricValue(well.consumption12h, format, consumptionDecimals, options.consumption12hUnit || 'm³')}
+                {showOperatorColumn && well.operator && (
+                  <span className={styles.mobileOperatorTag} title="Betreiber">
+                    {well.operator}
                   </span>
-                </div>
-
-                <div className={styles.mobileMetricBox}>
-                  <span className={styles.metricLabel}>Entnahme lfd. Jahr</span>
-                  <span className={styles.metricVal}>
-                    {formatMetricValue(well.consumptionYear, format, consumptionDecimals, options.consumptionYearUnit || 'm³')}
-                  </span>
-                </div>
+                )}
               </div>
 
-              {/* Footer Timestamp */}
-              {well.lastSeenFormatted && well.lastSeenFormatted !== '-' && (
-                <div className={styles.mobileCardFooter}>
-                  <span>Letzter Datentransfer: {well.lastSeenFormatted}</span>
-                </div>
-              )}
+              {/* Row 3: Secondary Metrics (12h, Jahr, Last Transmission) */}
+              <div className={styles.mobileRowBottom}>
+                <span>
+                  12h: <strong>{formatMetricValue(well.consumption12h, format, consumptionDecimals, options.consumption12hUnit || 'm³')}</strong>
+                </span>
+                <span className={styles.mobileBullet}>•</span>
+                <span>
+                  Jahr: <strong>{formatMetricValue(well.consumptionYear, format, consumptionDecimals, options.consumptionYearUnit || 'm³')}</strong>
+                </span>
+                {well.lastSeenFormatted && well.lastSeenFormatted !== '-' && (
+                  <>
+                    <span className={styles.mobileBullet}>•</span>
+                    <span className={styles.mobileTimestamp} title="Letzter Datentransfer">
+                      {well.lastSeenFormatted}
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
           );
         })}
@@ -186,67 +182,69 @@ const getStyles = (theme: GrafanaTheme2) => ({
     border: 1px solid ${theme.colors.border.weak};
     border-radius: ${theme.shape.radius.default};
     background: ${theme.colors.background.primary};
+    scrollbar-gutter: stable;
     scrollbar-width: thin;
-    scrollbar-color: ${theme.colors.border.medium} transparent;
+    scrollbar-color: ${theme.colors.border.strong} ${theme.colors.background.secondary};
     &::-webkit-scrollbar {
-      height: 6px;
+      height: 8px;
     }
     &::-webkit-scrollbar-track {
-      background: transparent;
+      background: ${theme.colors.background.secondary};
+      border-radius: 4px;
     }
     &::-webkit-scrollbar-thumb {
-      background: ${theme.colors.border.medium};
-      border-radius: 3px;
+      background: ${theme.colors.border.strong};
+      border-radius: 4px;
     }
     &::-webkit-scrollbar-thumb:hover {
-      background: ${theme.colors.border.strong};
+      background: ${theme.colors.text.secondary};
     }
   `,
   table: css`
     width: 100%;
     min-width: 680px;
     border-collapse: collapse;
-    font-size: clamp(14px, 0.95vw, 17px);
+    font-size: clamp(13px, 0.9vw, 15px);
     text-align: left;
   `,
   thWell: css`
-    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
+    padding: ${theme.spacing(0.75)} ${theme.spacing(1.25)};
     background: ${theme.colors.background.secondary};
     color: ${theme.colors.text.secondary};
-    font-size: clamp(13px, 0.9vw, 16px);
+    font-size: clamp(12px, 0.85vw, 14px);
     font-weight: ${theme.typography.fontWeightBold};
     border-bottom: 2px solid ${theme.colors.border.medium};
-    min-width: 240px;
+    min-width: 220px;
   `,
   thOperator: css`
-    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
+    padding: ${theme.spacing(0.75)} ${theme.spacing(1.25)};
     background: ${theme.colors.background.secondary};
     color: ${theme.colors.text.secondary};
-    font-size: clamp(13px, 0.9vw, 16px);
+    font-size: clamp(12px, 0.85vw, 14px);
     font-weight: ${theme.typography.fontWeightBold};
     border-bottom: 2px solid ${theme.colors.border.medium};
-    min-width: 150px;
+    min-width: 140px;
   `,
   thNumber: css`
-    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
+    padding: ${theme.spacing(0.75)} ${theme.spacing(1.25)};
     background: ${theme.colors.background.secondary};
     color: ${theme.colors.text.secondary};
-    font-size: clamp(13px, 0.9vw, 16px);
+    font-size: clamp(12px, 0.85vw, 14px);
     font-weight: ${theme.typography.fontWeightBold};
     border-bottom: 2px solid ${theme.colors.border.medium};
     text-align: right;
     white-space: nowrap;
-    min-width: 150px;
+    min-width: 140px;
   `,
   thStatus: css`
-    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
+    padding: ${theme.spacing(0.75)} ${theme.spacing(1.25)};
     background: ${theme.colors.background.secondary};
     color: ${theme.colors.text.secondary};
-    font-size: clamp(13px, 0.9vw, 16px);
+    font-size: clamp(12px, 0.85vw, 14px);
     font-weight: ${theme.typography.fontWeightBold};
     border-bottom: 2px solid ${theme.colors.border.medium};
     text-align: center;
-    width: 120px;
+    width: 100px;
   `,
   row: css`
     border-bottom: 1px solid ${theme.colors.border.weak};
@@ -256,32 +254,32 @@ const getStyles = (theme: GrafanaTheme2) => ({
     }
   `,
   tdWell: css`
-    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
-    font-size: clamp(14px, 1vw, 17px);
+    padding: ${theme.spacing(0.75)} ${theme.spacing(1.25)};
+    font-size: clamp(13px, 0.9vw, 15px);
     font-weight: ${theme.typography.fontWeightMedium};
   `,
   tdOperator: css`
-    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
-    font-size: clamp(14px, 0.95vw, 16px);
+    padding: ${theme.spacing(0.75)} ${theme.spacing(1.25)};
+    font-size: clamp(13px, 0.85vw, 15px);
     color: ${theme.colors.text.secondary};
   `,
   tdNumber: css`
-    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
+    padding: ${theme.spacing(0.75)} ${theme.spacing(1.25)};
     text-align: right;
-    font-size: clamp(14px, 1vw, 17px);
+    font-size: clamp(13px, 0.9vw, 15px);
     font-family: ${theme.typography.fontFamilyMonospace};
     font-weight: ${theme.typography.fontWeightMedium};
     color: ${theme.colors.text.primary};
   `,
   tdStatus: css`
-    padding: ${theme.spacing(1.25)} ${theme.spacing(1.75)};
+    padding: ${theme.spacing(0.75)} ${theme.spacing(1.25)};
     text-align: center;
   `,
   wellLink: css`
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: clamp(14px, 1vw, 17px);
+    font-size: clamp(13px, 0.9vw, 15px);
     color: ${theme.colors.primary.text};
     text-decoration: none;
     cursor: pointer;
@@ -301,8 +299,8 @@ const getStyles = (theme: GrafanaTheme2) => ({
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: ${theme.colors.success.transparent};
     cursor: help;
@@ -315,8 +313,8 @@ const getStyles = (theme: GrafanaTheme2) => ({
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: ${theme.colors.error.transparent};
     cursor: help;
@@ -326,18 +324,18 @@ const getStyles = (theme: GrafanaTheme2) => ({
     }
   `,
   dotOnline: css`
-    width: 11px;
-    height: 11px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: ${theme.colors.success.text};
-    box-shadow: 0 0 8px ${theme.colors.success.text};
+    box-shadow: 0 0 6px ${theme.colors.success.text};
   `,
   dotOffline: css`
-    width: 11px;
-    height: 11px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: ${theme.colors.error.text};
-    box-shadow: 0 0 8px ${theme.colors.error.text};
+    box-shadow: 0 0 6px ${theme.colors.error.text};
   `,
   emptyState: css`
     padding: ${theme.spacing(2)};
@@ -349,66 +347,88 @@ const getStyles = (theme: GrafanaTheme2) => ({
   `,
 
   // -------------------------------------------------------------
-  // Mobile Card Styles
+  // Compact Mobile Card Styles (Space-Saving)
   // -------------------------------------------------------------
   cardList: css`
     display: flex;
     flex-direction: column;
-    gap: ${theme.spacing(1.25)};
+    gap: ${theme.spacing(0.75)};
     width: 100%;
   `,
   mobileCard: css`
     background: ${theme.colors.background.primary};
     border: 1px solid ${theme.colors.border.weak};
     border-radius: ${theme.shape.radius.default};
-    padding: ${theme.spacing(1.5)};
+    padding: ${theme.spacing(0.75)} ${theme.spacing(1)};
     display: flex;
     flex-direction: column;
-    gap: ${theme.spacing(1)};
-    box-shadow: ${theme.shadows.z1};
+    gap: 3px;
+    transition: background 0.15s ease-in-out, border-color 0.15s ease-in-out;
+    &:hover {
+      background: ${theme.colors.action.hover};
+      border-color: ${theme.colors.border.medium};
+    }
   `,
-  mobileCardHeader: css`
+  mobileRowTop: css`
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: ${theme.spacing(1)};
   `,
-  mobileCardSub: css`
+  mobileRowMiddle: css`
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: ${theme.typography.bodySmall.fontSize};
-    color: ${theme.colors.text.secondary};
-  `,
-  mobileMetricsGrid: css`
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    justify-content: space-between;
     gap: ${theme.spacing(1)};
-    padding: ${theme.spacing(1)};
-    background: ${theme.colors.background.secondary};
-    border-radius: 4px;
+    margin-top: 1px;
   `,
-  mobileMetricBox: css`
+  mobileMeterGroup: css`
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    align-items: baseline;
+    gap: 6px;
   `,
-  metricLabel: css`
+  mobileLabel: css`
     font-size: 11px;
     color: ${theme.colors.text.secondary};
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
   `,
-  metricVal: css`
+  mobileValBold: css`
     font-size: 14px;
-    font-family: ${theme.typography.fontFamilyMonospace};
     font-weight: ${theme.typography.fontWeightBold};
+    font-family: ${theme.typography.fontFamilyMonospace};
     color: ${theme.colors.text.primary};
   `,
-  mobileCardFooter: css`
+  mobileOperatorTag: css`
     font-size: 11px;
     color: ${theme.colors.text.secondary};
-    border-top: 1px solid ${theme.colors.border.weak};
-    padding-top: 4px;
+    background: ${theme.colors.background.secondary};
+    border: 1px solid ${theme.colors.border.weak};
+    border-radius: ${theme.shape.radius.pill};
+    padding: 1px 6px;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `,
+  mobileRowBottom: css`
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 11px;
+    color: ${theme.colors.text.secondary};
+    margin-top: 1px;
+    strong {
+      color: ${theme.colors.text.primary};
+      font-family: ${theme.typography.fontFamilyMonospace};
+      font-weight: ${theme.typography.fontWeightMedium};
+    }
+  `,
+  mobileBullet: css`
+    color: ${theme.colors.text.disabled};
+    font-size: 9px;
+  `,
+  mobileTimestamp: css`
+    color: ${theme.colors.text.secondary};
+    font-size: 11px;
   `,
 });
