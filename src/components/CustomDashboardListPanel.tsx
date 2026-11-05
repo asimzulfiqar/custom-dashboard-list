@@ -99,17 +99,15 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
     return groups.length > 1;
   }, [interpolatedOptions.viewMode, detectedRole, groups.length]);
 
-  const isAutoHeight = interpolatedOptions.autoHeight === true;
-
   return (
     <div
       className={isNarrow ? styles.containerNarrow : styles.container}
       style={{
         width: '100%',
         maxWidth: `${width}px`,
-        height: isAutoHeight ? 'auto' : `${height}px`,
-        maxHeight: isAutoHeight ? 'none' : `${height}px`,
-        overflowY: isAutoHeight ? 'visible' : 'auto',
+        height: `${height}px`,
+        maxHeight: `${height}px`,
+        overflowY: 'auto',
         overflowX: isNarrow ? 'hidden' : 'auto',
         boxSizing: 'border-box',
       }}
@@ -174,21 +172,23 @@ const getStyles = (theme: GrafanaTheme2) => ({
     overflow-x: auto;
     scrollbar-gutter: stable;
     scrollbar-width: thin;
-    scrollbar-color: ${theme.colors.border.strong} ${theme.colors.background.secondary};
+    scrollbar-color: ${theme.isDark ? 'rgba(255, 255, 255, 0.35)' : 'rgba(0, 0, 0, 0.35)'} ${theme.isDark ? 'rgba(0, 0, 0, 0.25)' : 'rgba(0, 0, 0, 0.05)'};
     &::-webkit-scrollbar {
-      width: 8px;
+      width: 10px;
       height: 8px;
     }
     &::-webkit-scrollbar-track {
-      background: ${theme.colors.background.secondary};
-      border-radius: 4px;
+      background: ${theme.isDark ? 'rgba(0, 0, 0, 0.25)' : 'rgba(0, 0, 0, 0.05)'};
+      border-radius: 5px;
     }
     &::-webkit-scrollbar-thumb {
-      background: ${theme.colors.border.strong};
-      border-radius: 4px;
+      background: ${theme.isDark ? 'rgba(255, 255, 255, 0.35)' : 'rgba(0, 0, 0, 0.35)'};
+      border-radius: 5px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
     }
     &::-webkit-scrollbar-thumb:hover {
-      background: ${theme.colors.text.secondary};
+      background: ${theme.isDark ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)'};
     }
     display: flex;
     flex-direction: column;
@@ -201,19 +201,25 @@ const getStyles = (theme: GrafanaTheme2) => ({
     box-sizing: border-box;
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-gutter: stable;
     scrollbar-width: thin;
-    scrollbar-color: ${theme.colors.border.strong} ${theme.colors.background.secondary};
+    scrollbar-color: ${theme.isDark ? 'rgba(255, 255, 255, 0.35)' : 'rgba(0, 0, 0, 0.35)'} ${theme.isDark ? 'rgba(0, 0, 0, 0.25)' : 'rgba(0, 0, 0, 0.05)'};
     &::-webkit-scrollbar {
-      width: 6px;
+      width: 8px;
       height: 0px;
     }
     &::-webkit-scrollbar-track {
-      background: ${theme.colors.background.secondary};
-      border-radius: 3px;
+      background: ${theme.isDark ? 'rgba(0, 0, 0, 0.25)' : 'rgba(0, 0, 0, 0.05)'};
+      border-radius: 4px;
     }
     &::-webkit-scrollbar-thumb {
-      background: ${theme.colors.border.strong};
-      border-radius: 3px;
+      background: ${theme.isDark ? 'rgba(255, 255, 255, 0.35)' : 'rgba(0, 0, 0, 0.35)'};
+      border-radius: 4px;
+      border: 1px solid transparent;
+      background-clip: padding-box;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: ${theme.isDark ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)'};
     }
     display: flex;
     flex-direction: column;

@@ -65,7 +65,7 @@ export interface CustomDashboardListOptions {
   consumptionYearUnit: string;
   freshnessHoursThreshold: number; // default 24h
   excludedOperators: string; // Comma-separated list or substring of operators to hide
-  autoHeight: boolean; // Auto-fit panel height to content so all rows are shown
+  autoHeight?: boolean;
   searchEnabled: boolean;
   defaultExpandedAccordions: boolean;
   showSampleDataOnEmpty: boolean;

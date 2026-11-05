@@ -233,13 +233,6 @@ export const plugin = new PanelPlugin<CustomDashboardListOptions>(CustomDashboar
       defaultValue: 'Hauptbetreiber',
     })
     .addBooleanSwitch({
-      path: 'autoHeight',
-      name: 'Dynamic Height (Auto-expand without inner scrollbar)',
-      category: ['Formatting & Status'],
-      description: 'Automatically adjusts panel height to display all data without an inner scroll box.',
-      defaultValue: false,
-    })
-    .addBooleanSwitch({
       path: 'searchEnabled',
       name: 'Enable Search Bar (Authority View)',
       category: ['Formatting & Status'],
