@@ -354,6 +354,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
     flex-direction: column;
     gap: ${theme.spacing(0.75)};
     width: 100%;
+    box-sizing: border-box;
   `,
   mobileCard: css`
     background: ${theme.colors.background.primary};
@@ -363,6 +364,9 @@ const getStyles = (theme: GrafanaTheme2) => ({
     display: flex;
     flex-direction: column;
     gap: 3px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
     transition: background 0.15s ease-in-out, border-color 0.15s ease-in-out;
     &:hover {
       background: ${theme.colors.action.hover};

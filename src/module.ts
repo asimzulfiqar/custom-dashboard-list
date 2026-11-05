@@ -237,7 +237,7 @@ export const plugin = new PanelPlugin<CustomDashboardListOptions>(CustomDashboar
       name: 'Dynamic Height (Auto-expand without inner scrollbar)',
       category: ['Formatting & Status'],
       description: 'Automatically adjusts panel height to display all data without an inner scroll box.',
-      defaultValue: true,
+      defaultValue: false,
     })
     .addBooleanSwitch({
       path: 'searchEnabled',

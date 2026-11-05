@@ -99,18 +99,19 @@ export const CustomDashboardListPanel: React.FC<Props> = ({
     return groups.length > 1;
   }, [interpolatedOptions.viewMode, detectedRole, groups.length]);
 
-  const isAutoHeight = interpolatedOptions.autoHeight ?? true;
+  const isAutoHeight = interpolatedOptions.autoHeight === true;
 
   return (
     <div
       className={isNarrow ? styles.containerNarrow : styles.container}
       style={{
-        width: `${width}px`,
+        width: '100%',
+        maxWidth: `${width}px`,
         height: isAutoHeight ? 'auto' : `${height}px`,
-        minHeight: isAutoHeight ? 'auto' : `${height}px`,
         maxHeight: isAutoHeight ? 'none' : `${height}px`,
         overflowY: isAutoHeight ? 'visible' : 'auto',
-        overflowX: 'auto',
+        overflowX: isNarrow ? 'hidden' : 'auto',
+        boxSizing: 'border-box',
       }}
     >
       {/* Sample Data Banner */}
@@ -199,13 +200,12 @@ const getStyles = (theme: GrafanaTheme2) => ({
     padding: ${theme.spacing(1)};
     box-sizing: border-box;
     overflow-y: auto;
-    overflow-x: auto;
-    scrollbar-gutter: stable;
+    overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: ${theme.colors.border.strong} ${theme.colors.background.secondary};
     &::-webkit-scrollbar {
       width: 6px;
-      height: 6px;
+      height: 0px;
     }
     &::-webkit-scrollbar-track {
       background: ${theme.colors.background.secondary};
